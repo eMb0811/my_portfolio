@@ -1,0 +1,161 @@
+/* Variables de couleurs */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --bg-light: #ffffff;
+    --text-dark: #212529;
+    --text-muted: #6c757d;
+    --section-padding: 100px 0;
+    --transition: all 0.3s ease;
+    --orange: #fd7e14;
+}
+
+/* Mode Sombre */
+[data-theme="dark"] {
+    --bg-light: #121212;
+    --text-dark: #f8f9fa;
+    --text-muted: #adb5bd;
+    background-color: #121212;
+    color: #f8f9fa;
+}
+
+[data-theme="dark"] .bg-light {
+    background-color: #1e1e1e !important;
+}
+
+[data-theme="dark"] .navbar {
+    background-color: #121212 !important;
+    border-bottom: 1px solid #333;
+}
+
+[data-theme="dark"] .navbar-light .nav-link {
+    color: #f8f9fa;
+}
+
+[data-theme="dark"] .card, [data-theme="dark"] .skill-card {
+    background-color: #1e1e1e;
+    border-color: #333 !important;
+    color: #f8f9fa;
+}
+
+/* Styles Généraux */
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+.section-padding {
+    padding: var(--section-padding);
+}
+
+.transition-all {
+    transition: var(--transition);
+}
+
+.text-orange {
+    color: var(--orange);
+}
+
+.bg-orange {
+    background-color: var(--orange);
+}
+
+/* Navbar */
+.navbar {
+    padding: 1rem 0;
+}
+
+.navbar.scrolled {
+    padding: 0.5rem 0;
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .navbar.scrolled {
+    background-color: rgba(18, 18, 18, 0.95) !important;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(13, 110, 253, 0) 100%);
+    padding-top: 80px;
+}
+
+/* Animations */
+.fade-in-up {
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Skill Cards */
+.skill-card {
+    transition: var(--transition);
+    cursor: default;
+}
+
+.skill-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-color) !important;
+}
+
+/* Project Cards */
+.project-card {
+    transition: var(--transition);
+}
+
+.project-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+
+/* Back to Top */
+#back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: none;
+    z-index: 1000;
+    width: 45px;
+    height: 45px;
+    transition: var(--transition);
+}
+
+#back-to-top:hover {
+    transform: translateY(-5px);
+}
+
+/* Form Styles */
+.form-control {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .section-padding {
+        padding: 60px 0;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem;
+    }
+}
+
+

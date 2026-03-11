@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Étudiant en Informatique & Développeur</title>
+    <meta name="description" content="Portfolio professionnel d'un étudiant en L3 Informatique, développeur passionné par Python, Django et les réseaux.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-bs-spy="scroll" data-bs-target="#navbar-main">
+
+    <!-- Navbar -->
+    <nav id="navbar-main" class="navbar navbar-expand-lg fixed-top navbar-light bg-white shadow-sm transition-all">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">Mouhamet Barry</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">À propos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#skills">Compétences</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#projects">Projets</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <button id="dark-mode-toggle" class="btn btn-outline-secondary btn-sm mt-1">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section d-flex align-items-center">
+        <div class="container text-center">
+            <div class="fade-in-up">
+                <h1 class="display-3 fw-bold mb-3">Mouhamet Barry</h1>
+                <h2 class="h3 text-muted mb-4">Étudiant en Informatique / Développeur</h2>
+                <p class="lead mb-5 mx-auto" style="max-width: 700px;">
+                    Passionné par le développement logiciel et l'administration système. Diplômé d'un Licence 3 Informatique, je conçois des solutions web modernes et performantes.
+                </p>
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a href="#projects" class="btn btn-primary btn-lg px-4 gap-3">Voir mes projets</a>
+                    <a href="#contact" class="btn btn-outline-primary btn-lg px-4">Me contacter</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="section-padding bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="fw-bold mb-4">À propos de moi</h2>
+                    <p>Bonjour ! Je suis un étudiant passionné par les nouvelles technologies et le développement informatique. Mon parcours académique m'a permis d'acquérir une base solide en algorithmique, en programmation et en gestion de réseaux.</p>
+                    <p>Je suis curieux, autonome et j'aime relever des défis techniques, que ce soit pour optimiser une base de données ou configurer une infrastructure réseau complexe.</p>
+                    <h4 class="mt-4 h5 fw-bold">Parcours Universitaire</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-graduation-cap text-primary me-2"></i> <strong>Licence 3 Informatique</strong> - Université Cheikh Anta Diop de Dakar </li>
+                        <li class="mb-2"><i class="fas fa-certificate text-primary me-2"></i> <strong>Baccalauréat Scientifique</strong> </li>
+                    </ul>
+                </div>
+                <div class="col-lg-5 offset-lg-1">
+                    <div class="about-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" alt="Espace de travail" class="img-fluid rounded-4 shadow">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="section-padding">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-5">Mes Compétences</h2>
+            <div class="row g-4 justify-content-center">
+                <!-- Python -->
+                <div class="col-6 col-md-3">
+                    <div class="skill-card p-4 rounded-3 shadow-sm border h-100">
+                        <i class="fab fa-python fa-3x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Python</h5>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar" role="progressbar" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Java -->
+                <div class="col-6 col-md-3">
+                    <div class="skill-card p-4 rounded-3 shadow-sm border h-100">
+                        <i class="fab fa-java fa-3x text-danger mb-3"></i>
+                        <h5 class="fw-bold">Java</h5>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- SQL -->
+                <div class="col-6 col-md-3">
+                    <div class="skill-card p-4 rounded-3 shadow-sm border h-100">
+                        <i class="fas fa-database fa-3x text-info mb-3"></i>
+                        <h5 class="fw-bold">SQL / PostgreSQL</h5>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Networks -->
+                <div class="col-6 col-md-3">
+                    <div class="skill-card p-4 rounded-3 shadow-sm border h-100">
+                        <i class="fas fa-network-wired fa-3x text-warning mb-3"></i>
+                        <h5 class="fw-bold">Réseaux</h5>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Django -->
+                <div class="col-6 col-md-3">
+                    <div class="skill-card p-4 rounded-3 shadow-sm border h-100">
+                        <i class="fas fa-leaf fa-3x text-success mb-3"></i>
+                        <h5 class="fw-bold">Django</h5>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 65%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Web Dev -->
+                <div class="col-6 col-md-3">
+                    <div class="skill-card p-4 rounded-3 shadow-sm border h-100">
+                        <i class="fab fa-html5 fa-3x text-orange mb-3"></i>
+                        <h5 class="fw-bold">HTML/CSS/JS</h5>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-orange" role="progressbar" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Linux -->
+                <div class="col-6 col-md-3">
+                    <div class="skill-card p-4 rounded-3 shadow-sm border h-100">
+                        <i class="fab fa-linux fa-3x text-dark mb-3"></i>
+                        <h5 class="fw-bold">Linux</h5>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-dark" role="progressbar" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section-padding bg-light">
+        <div class="container">
+            <h2 class="fw-bold mb-5 text-center">Mes Projets</h2>
+            <div class="row g-4">
+                <!-- Project 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm project-card">
+                        <div class="card-body p-4">
+                            <div class="mb-3 text-primary"><i class="fas fa-utensils fa-2x"></i></div>
+                            <h5 class="card-title fw-bold">Gestion de Restaurant</h5>
+                            <p class="card-text text-muted small">Application web complète pour la gestion des commandes, des stocks et du personnel.</p>
+                            <div class="mb-3">
+                                <span class="badge bg-secondary me-1">Django</span>
+                                <span class="badge bg-secondary me-1">PostgreSQL</span>
+                            </div>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fab fa-github me-1"></i> GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Project 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm project-card">
+                        <div class="card-body p-4">
+                            <div class="mb-3 text-primary"><i class="fas fa-shopping-cart fa-2x"></i></div>
+                            <h5 class="card-title fw-bold">Site E-commerce (NGUAYE)</h5>
+                            <p class="card-text text-muted small">Plateforme de vente en ligne avec panier, gestion de produits et interface utilisateur moderne.</p>
+                            <div class="mb-3">
+                                <span class="badge bg-secondary me-1">HTML/CSS</span>
+                                <span class="badge bg-secondary me-1">JavaScript</span>
+                            </div>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fab fa-github me-1"></i> GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Project 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm project-card">
+                        <div class="card-body p-4">
+                            <div class="mb-3 text-primary"><i class="fas fa-network-wired fa-2x"></i></div>
+                            <h5 class="card-title fw-bold">Labs Réseaux</h5>
+                            <p class="card-text text-muted small">Simulation d'architectures réseaux complexes, routage statique/dynamique et VLANs.</p>
+                            <div class="mb-3">
+                                <span class="badge bg-secondary me-1">Cisco Packet Tracer</span>
+                            </div>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fab fa-github me-1"></i> GitHub</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Project 4 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm project-card">
+                        <div class="card-body p-4">
+                            <div class="mb-3 text-primary"><i class="fas fa-chart-bar fa-2x"></i></div>
+                            <h5 class="card-title fw-bold">Analyse de Données</h5>
+                            <p class="card-text text-muted small">Scripts Python pour le nettoyage, l'analyse statistique et la visualisation de données.</p>
+                            <div class="mb-3">
+                                <span class="badge bg-secondary me-1">Python</span>
+                                <span class="badge bg-secondary me-1">Pandas</span>
+                                <span class="badge bg-secondary me-1">Matplotlib</span>
+                            </div>
+                            <a href="#" class="btn btn-sm btn-outline-primary"><i class="fab fa-github me-1"></i> GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                        <div class="row g-0">
+                            <div class="col-md-5 bg-primary text-white p-5 d-flex flex-column justify-content-center">
+                                <h3 class="fw-bold mb-4">Me contacter</h3>
+                                <p class="mb-4">N'hésitez pas à me contacter pour toute opportunité de stage ou collaboration.</p>
+                                <div class="contact-info">
+                                    <p class="mb-2"><i class="fas fa-envelope me-3"></i> elhadjibarry2001@gmail.com</p>
+                                    <p class="mb-2"><i class="fab fa-linkedin me-3"></i> linkedin.com/in/votre-profil</p>
+                                    <p class="mb-0"><i class="fab fa-github me-3"></i> github.com/eMB0811</p>
+                                </div>
+                            </div>
+                            <div class="col-md-7 p-5">
+                                <form id="contact-form">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nom complet</label>
+                                        <input type="text" class="form-control" placeholder="Votre nom" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" class="form-control" placeholder="votre@email.com" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Message</label>
+                                        <textarea class="form-control" rows="4" placeholder="Votre message..." required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Envoyer le message</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container text-center">
+            <div class="social-links mb-4">
+                <a href="#" class="text-white mx-3 fs-4"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-white mx-3 fs-4"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="text-white mx-3 fs-4"><i class="fab fa-twitter"></i></a>
+            </div>
+	     <p class="mb-0 text-muted>&copy; 2026 Mouhamet Barry. Tous droits résérvés.</p>
+        </div>
+     </footer>
+     <button id="back-to-top" class="btn btn-prymary rounded-circle shadow">
+	<i class="fas fa-arrow-up"></i>
+     </button>
+  </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="script.js></script>
+</html>
