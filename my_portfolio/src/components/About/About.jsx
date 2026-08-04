@@ -4,7 +4,7 @@ import useReveal from '../../hooks/useReveal.js';
 const parcours = [
   {
     id: 'm1',
-    diplome: 'Master 1 – Réseaux, Télécommunications & Cybersécurité (RETEL)',
+    diplome: 'Master 1 – Réseaux, Télécommunications (RETEL)',
     etablissement: 'Université Cheikh Anta Diop de Dakar (en cours)',
   },
   {
