@@ -1,0 +1,17 @@
+.projects {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 96px 24px;
+}
+
+.title {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 600;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}

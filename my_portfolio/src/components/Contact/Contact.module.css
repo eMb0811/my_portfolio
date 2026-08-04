@@ -1,0 +1,74 @@
+.contact {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 96px 24px;
+}
+
+.title {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.email {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  margin-bottom: 32px;
+}
+
+.form {
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.field input,
+.field textarea {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.submit {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #06211E;
+  font-weight: 600;
+}
+
+.submit:hover {
+  background: #6fe0d5;
+}

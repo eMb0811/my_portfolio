@@ -1,0 +1,29 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.nom {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.bars {
+  display: flex;
+  gap: 4px;
+}
+
+.bar {
+  height: 6px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+.barFilled {
+  background: var(--accent);
+}

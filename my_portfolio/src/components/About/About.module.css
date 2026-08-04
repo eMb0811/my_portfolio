@@ -1,0 +1,45 @@
+.about {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 96px 24px;
+}
+
+.title {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+
+.text {
+  font-family: var(--font-body);
+  color: var(--text-muted);
+  max-width: 700px;
+}
+
+.text + .text {
+  margin-top: 16px;
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--accent);
+  margin-top: 48px;
+  margin-bottom: 16px;
+}
+
+.parcours {
+  border-left: 2px solid var(--border);
+  padding-left: 20px;
+}
+
+.parcours li {
+  padding: 12px 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.parcours li strong {
+  color: var(--text);
+  font-weight: 600;
+}
