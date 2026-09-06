@@ -1,6 +1,7 @@
 import styles from './About.module.css';
 import useReveal from '../../hooks/useReveal.js';
 import photoMb from '../../assets/photo_mb.jpg';
+import { GitHubIcon, LinkedInIcon } from '../common/Icons.jsx';
 
 const parcours = [
   {
@@ -76,6 +77,29 @@ function About() {
                   <span className={styles.statusDot}></span> En recherche de stage
                 </span>
               </div>
+            </div>
+
+            <div className={styles.profileSocials}>
+              <a
+                href="https://github.com/eMb0811"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.profileSocialBtn}
+                title="Profil GitHub"
+              >
+                <GitHubIcon size={17} />
+                <span>GitHub</span>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/mouhamed-barry-043375259"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.profileSocialBtn}
+                title="Profil LinkedIn"
+              >
+                <LinkedInIcon size={17} />
+                <span>LinkedIn</span>
+              </a>
             </div>
           </div>
         </div>

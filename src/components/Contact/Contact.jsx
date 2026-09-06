@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './Contact.module.css';
 import useReveal from '../../hooks/useReveal.js';
+import { GitHubIcon, LinkedInIcon } from '../common/Icons.jsx';
 
 function Contact() {
   const [nom, setNom] = useState('');
@@ -40,6 +41,27 @@ function Contact() {
               elhadjibarry2001@gmail.com
             </a>.
           </p>
+
+          <div className={styles.socialStrip}>
+            <a
+              href="https://github.com/eMb0811"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialPill}
+            >
+              <GitHubIcon size={17} />
+              <span>GitHub</span>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/mouhamed-barry-043375259"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialPill}
+            >
+              <LinkedInIcon size={17} />
+              <span>LinkedIn</span>
+            </a>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>

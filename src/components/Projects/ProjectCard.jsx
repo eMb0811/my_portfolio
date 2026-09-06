@@ -1,4 +1,5 @@
 import styles from './ProjectCard.module.css';
+import { GitHubIcon } from '../common/Icons.jsx';
 
 function getProjectIcon(id) {
   switch (id) {
@@ -55,11 +56,10 @@ function ProjectCard({ id, titre, description, tags }) {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.externalLink}
+            title="Voir le dépôt GitHub"
             aria-label="Voir le dépôt GitHub"
           >
-            <svg className={styles.externalSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
+            <GitHubIcon size={18} />
           </a>
         </div>
         <h3 className={styles.titre}>{titre}</h3>

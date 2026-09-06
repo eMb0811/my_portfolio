@@ -56,11 +56,16 @@
 .links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   font-size: 0.88rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.links a {
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-mono);
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -68,7 +73,7 @@
   transition: color 0.2s ease;
 }
 
-.links a:hover {
+.footerLink:hover {
   color: var(--accent);
 }
 
