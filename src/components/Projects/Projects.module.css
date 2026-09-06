@@ -2,16 +2,58 @@
   max-width: var(--container);
   margin: 0 auto;
   padding: 96px 24px;
+  border-top: 1px solid rgba(32, 43, 66, 0.6);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+}
+
+.sectionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.badgeNum {
+  color: var(--accent);
 }
 
 .title {
-  font-size: clamp(1.5rem, 3vw, 2.1rem);
-  font-weight: 600;
-  margin-bottom: 40px;
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.headerDesc {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  max-width: 440px;
+  line-height: 1.6;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
 }
+

@@ -14,7 +14,15 @@ function Skills() {
 
   return (
     <section id="skills" ref={ref} className={`${styles.skills} reveal ${visible ? 'revealVisible' : ''}`}>
-      <h2 className={styles.title}>Mes compétences</h2>
+      <div className={styles.header}>
+        <div className={styles.sectionBadge}>
+          <span className={styles.badgeNum}>02.</span> STACK TECHNIQUE
+        </div>
+        <h2 className={styles.title}>Compétences &amp; Maîtrise Opérationnelle</h2>
+        <p className={styles.subtitle}>
+          Technologies éprouvées en environnements de laboratoire, projets académiques et déploiements réels.
+        </p>
+      </div>
 
       <div className={styles.filters}>
         {categoriesSkills.map((cat) => (

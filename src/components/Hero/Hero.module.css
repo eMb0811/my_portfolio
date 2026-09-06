@@ -1,69 +1,191 @@
 .hero {
-  min-height: 100vh;
+  position: relative;
+  min-height: 90vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 120px 24px 60px;
-  max-width: var(--container);
+  padding: 130px 24px 70px;
+  overflow: hidden;
+}
+
+.ambientGlow {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 550px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(0, 245, 212, 0.12) 0%, rgba(8, 14, 27, 0) 70%);
+  filter: blur(80px);
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.container {
+  max-width: 900px;
   margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 28px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.badgePulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--accent);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .title {
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 700;
-  color: var(--text);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 20px;
 }
 
-.subtitle {
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  color: var(--accent);
-  margin-top: 16px;
+.breakLine {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .breakLine {
+    display: inline;
+  }
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #00F5D4 0%, #34D399 50%, #2DD4BF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .text {
-  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.15rem);
   color: var(--text-muted);
-  max-width: 620px;
-  margin-top: 24px;
+  max-width: 650px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
 }
 
 .actions {
   display: flex;
   gap: 16px;
-  margin-top: 40px;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
 }
 
-.btn {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  padding: 12px 22px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
-}
-
-.btnPrimary {
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 12px;
   background: var(--accent);
-  border-color: var(--accent);
-  color: #06211E;
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(0, 245, 212, 0.25);
+  transition: all 0.2s ease;
+}
+
+.primaryBtn:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 10px 30px rgba(0, 245, 212, 0.4);
+  transform: translateY(-2px);
+}
+
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: #ffffff;
   font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-.btnPrimary:hover {
-  background: #6fe0d5;
-}
-
-.btn:not(.btnPrimary) {
-  color: var(--text);
-}
-
-.btn:not(.btnPrimary):hover {
-  border-color: var(--accent);
+.secondaryBtn:hover {
+  border-color: rgba(0, 245, 212, 0.6);
   color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.btnIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.mailIcon {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+}
+
+.techStrip {
+  margin-top: 50px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(32, 43, 66, 0.6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.techBadge {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-dim);
+  transition: all 0.2s ease;
+}
+
+.techBadge:hover {
+  border-color: var(--border);
+  color: var(--text-muted);
 }

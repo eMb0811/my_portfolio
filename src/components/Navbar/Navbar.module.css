@@ -4,35 +4,107 @@
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(11, 18, 32, 0.85);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(8, 14, 27, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+  height: 72px;
 }
 
 .inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
+  padding: 0 24px;
   max-width: var(--container);
   margin: 0 auto;
+  height: 100%;
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-mono);
-  font-weight: 600;
-  font-size: 1rem;
-  color: var(--text);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  transition: opacity 0.2s ease;
+}
+
+.brand:hover {
+  opacity: 0.9;
+}
+
+.brandTag {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.brandAccent {
+  color: var(--accent);
+}
+
+.statusBadge {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(18, 24, 38, 0.85);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.statusDotWrapper {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+}
+
+.statusPing {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background-color: #34d399;
+  opacity: 0.75;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.statusDot {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #10b981;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 .toggle {
-  background: transparent;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 10px;
   color: var(--text);
   padding: 8px 14px;
   font-family: var(--font-mono);
   font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .toggle:hover {
@@ -40,49 +112,122 @@
   color: var(--accent);
 }
 
-.links {
-  position: absolute;
-  top: 100%;
-  right: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px;
+.navActions {
   display: none;
   flex-direction: column;
-  min-width: 160px;
+  position: absolute;
+  top: 72px;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  gap: 16px;
 }
 
-.linksOpen {
+.navActionsOpen {
   display: flex;
 }
 
-.links li a {
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navLink {
   display: block;
-  padding: 10px 12px;
+  padding: 8px 12px;
   border-radius: var(--radius);
   color: var(--text-muted);
   font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease, background 0.2s ease;
 }
 
-.links li a:hover {
-  background: rgba(79, 209, 197, 0.1);
+.navLink:hover {
   color: var(--accent);
+  background: rgba(0, 245, 212, 0.06);
+}
+
+.headerButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.socialIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.socialIcon:hover {
+  border-color: rgba(0, 245, 212, 0.5);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.iconSvg {
+  width: 20px;
+  height: 20px;
+}
+
+.contactBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 245, 212, 0.2);
+  transition: all 0.2s ease;
+}
+
+.contactBtn:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 6px 20px rgba(0, 245, 212, 0.35);
+  transform: translateY(-1px);
 }
 
 @media (min-width: 768px) {
+  .statusBadge {
+    display: inline-flex;
+  }
+
   .toggle {
     display: none;
   }
- 
-  .links {
+
+  .navActions {
     display: flex;
     position: static;
     flex-direction: row;
+    align-items: center;
     background: transparent;
     border: none;
     padding: 0;
-    gap: 8px;
-    min-width: 0;
+    gap: 28px;
+  }
+
+  .links {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
   }
 }

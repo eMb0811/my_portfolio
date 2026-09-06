@@ -22,46 +22,73 @@ function Contact() {
       ref={ref}
       className={`${styles.contact} reveal ${visible ? 'revealVisible' : ''}`}
     >
-      <h2 className={styles.title}>Me contacter</h2>
-      <p className={styles.email}>elhadjibarry2001@gmail.com</p>
+      <div className={styles.ambientGlow} />
 
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.field}>
-          <label htmlFor="nom">Nom complet</label>
-          <input
-            id="nom"
-            type="text"
-            value={nom}
-            onChange={(e) => setNom(e.target.value)}
-            required
-          />
+      <div className={styles.card}>
+        <div className={styles.cardGlow} />
+
+        <div className={styles.header}>
+          <div className={styles.sectionBadge}>
+            <span className={styles.badgeNum}>04.</span> ENTRER EN CONTACT
+          </div>
+          <h2 className={styles.title}>
+            Prêt à collaborer sur vos enjeux d'infrastructure ?
+          </h2>
+          <p className={styles.subtitle}>
+            Recherche active d'une opportunité en stage de fin d'études ou alternance. N'hésitez pas à me laisser un message ou à m'écrire directement à{' '}
+            <a href="mailto:elhadjibarry2001@gmail.com" className={styles.emailLink}>
+              elhadjibarry2001@gmail.com
+            </a>.
+          </p>
         </div>
 
-        <div className={styles.field}>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.field}>
+            <label htmlFor="nom">Nom complet</label>
+            <input
+              id="nom"
+              type="text"
+              placeholder="Ex: Alexandre Dupont"
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+              required
+            />
+          </div>
 
-        <div className={styles.field}>
-          <label htmlFor="message">Message</label>
-          <textarea
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-          />
-        </div>
+          <div className={styles.field}>
+            <label htmlFor="email">Adresse email</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="alexandre@entreprise.fr"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <button type="submit" className={styles.submit}>Envoyer le message</button>
-      </form>
+          <div className={styles.field}>
+            <label htmlFor="message">Votre message</label>
+            <textarea
+              id="message"
+              placeholder="Parlez-moi de vos besoins, d'un projet d'infrastructure ou d'une opportunité..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" className={styles.submitBtn}>
+            <span>Envoyer le message</span>
+            <svg className={styles.submitIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </form>
+      </div>
     </section>
   );
 }
 
 export default Contact;
+

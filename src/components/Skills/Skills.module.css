@@ -2,12 +2,43 @@
   max-width: var(--container);
   margin: 0 auto;
   padding: 96px 24px;
+  border-top: 1px solid rgba(32, 43, 66, 0.6);
+}
+
+.header {
+  margin-bottom: 36px;
+}
+
+.sectionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.badgeNum {
+  color: var(--accent);
 }
 
 .title {
-  font-size: clamp(1.5rem, 3vw, 2.1rem);
-  font-weight: 600;
-  margin-bottom: 24px;
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  max-width: 580px;
+  line-height: 1.6;
 }
 
 .filters {
@@ -19,33 +50,34 @@
 
 .filterBtn {
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
   color: var(--text-muted);
-  padding: 8px 16px;
+  padding: 8px 18px;
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .filterBtn:hover {
-  border-color: var(--accent);
-  color: var(--text);
+  border-color: rgba(0, 245, 212, 0.5);
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
 .filterActive {
-  background: rgba(79, 209, 197, 0.15);
+  background: rgba(0, 245, 212, 0.1);
   border-color: var(--accent);
   color: var(--accent);
   font-weight: 600;
-  box-shadow: 0 0 10px rgba(79, 209, 197, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 245, 212, 0.15);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   gap: 18px;
 }
+
 

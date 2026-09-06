@@ -1,41 +1,110 @@
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  transition: border-color 0.2s ease;
+  justify-content: space-between;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 
 .card:hover {
-  border-color: var(--accent-dim);
+  border-color: rgba(0, 245, 212, 0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 245, 212, 0.08);
+}
+
+.cardTop {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.iconBox {
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.card:hover .iconBox {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.iconSvg {
+  width: 20px;
+  height: 20px;
+}
+
+.externalLink {
+  color: var(--text-dim);
+  padding: 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.externalLink:hover {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+.externalSvg {
+  width: 18px;
+  height: 18px;
 }
 
 .titre {
-  font-size: 1.1rem;
-  color: var(--text);
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+  line-height: 1.35;
+  transition: color 0.2s ease;
+}
+
+.card:hover .titre {
+  color: var(--accent);
 }
 
 .description {
-  font-family: var(--font-body);
-  color: var(--text-muted);
   font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
 }
 
-.tags {
+.tagsContainer {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 4px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(32, 43, 66, 0.6);
 }
 
 .tag {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border-subtle);
   color: var(--accent);
-  border: 1px solid var(--accent-dim);
-  border-radius: 4px;
-  padding: 3px 8px;
 }
+
