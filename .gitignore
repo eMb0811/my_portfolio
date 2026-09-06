@@ -1,2 +1,32 @@
 node_modules/
 dist/
+
+# Terraform
+# Dossiers locaux .terraform
+**/.terraform/*
+**/.terraform/
+
+# Fichiers d'état (peuvent contenir des secrets en clair)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Fichiers de variables (contiennent souvent des mots de passe, tokens, IPs privées)
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Fichiers de crash et logs
+crash.log
+crash.*.log
+
+# Fichiers d'override locaux
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Fichiers de configuration CLI Terraform
+.terraformrc
+terraform.rc
