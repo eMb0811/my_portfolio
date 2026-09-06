@@ -4,13 +4,38 @@ import useReveal from '../../hooks/useReveal.js';
 const parcours = [
   {
     id: 'm1',
-    diplome: 'Master 1 – Réseaux, Télécommunications (RETEL)',
-    etablissement: 'Université Cheikh Anta Diop de Dakar (en cours)',
+    diplome: 'Master 1 – Réseaux et Télécommunications (RETEL)',
+    etablissement: 'Faculté des Sciences et Techniques – Université Cheikh Anta Diop de Dakar (en cours)',
+    details: 'Approfondissement en architectures réseaux avancées, sécurité des infrastructures, virtualisation, protocoles télécoms et gestion des systèmes distribués.',
   },
   {
     id: 'l3',
-    diplome: 'Licence 3 Informatique',
-    etablissement: 'Université Cheikh Anta Diop de Dakar',
+    diplome: 'Licence 3 – Informatique',
+    etablissement: 'Faculté des Sciences et Techniques – Université Cheikh Anta Diop de Dakar',
+    details: 'Fondamentaux des systèmes d\'exploitation (Linux), algorithmique, programmation orientée objet (Java, Python), bases de données relationnelles et génie logiciel.',
+  },
+];
+
+const piliers = [
+  {
+    id: 'cloud-native',
+    titre: 'Cloud Native & Orchestration',
+    description: 'Déploiement et gestion d\'applications distribuées avec Kubernetes (pods, ingress, services, volumes) et conteneurisation multi-stage optimisée via Docker.',
+  },
+  {
+    id: 'devops-cicd',
+    titre: 'DevOps & Industrialisation CI/CD',
+    description: 'Automatisation complète du cycle de livraison continue via GitHub Actions, intégration de tests, build et publication vers des registres de conteneurs (GHCR).',
+  },
+  {
+    id: 'cloud-iac',
+    titre: 'Cloud (AWS) & IaC',
+    description: 'Conception d\'infrastructures résilientes sur Amazon Web Services (EC2, VPC, Security Groups) et automatisation du provisioning avec Terraform.',
+  },
+  {
+    id: 'soc-securite',
+    titre: 'Sécurité, SOC & Supervision',
+    description: 'Centralisation de logs Linux avec RSyslog, corrélation et détection d\'intrusions via le SIEM Wazuh, combinées à des scripts Python d\'analyse automatisée.',
   },
 ];
 
@@ -20,23 +45,50 @@ function About() {
   return (
     <section id="about" ref={ref} className={`${styles.about} reveal ${visible ? 'revealVisible' : ''}`}>
       <h2 className={styles.title}>À propos de moi</h2>
-      <p className={styles.text}>
-        Étudiant en Master 1, passionné par la sécurité informatique, les
-        réseaux et le développement web. Je travaille actuellement sur une
-        plateforme SIEM augmentée par l'IA générative pour le triage
-        automatisé des alertes de sécurité.
-      </p>
-      <p className={styles.text}>
-        Curieux et autonome, j'aime relever des défis techniques, que ce soit
-        pour sécuriser une infrastructure réseau ou développer une application
-        web moderne.
-      </p>
+
+      <div className={styles.content}>
+        <p className={styles.text}>
+          Actuellement étudiant en Master 1 Réseaux et Télécommunications (RETEL) à l'Université
+          Cheikh Anta Diop de Dakar (UCAD) et titulaire d'une Licence en Informatique,
+          j'ai orienté mon apprentissage vers l'ingénierie Cloud, le DevOps et
+          l'industrialisation des infrastructures modernes.
+        </p>
+
+        <p className={styles.text}>
+          Passionné par l'écosystème Cloud Native, je concentre mes réalisations sur la conteneurisation
+          avec Docker et l'orchestration sous Kubernetes. J'automatise le cycle de vie
+          logiciel grâce à des pipelines CI/CD robustes avec GitHub Actions, permettant des déploiements
+          reproductibles, sécurisés et sans friction, tant sur des serveurs dédiés que dans des environnements Cloud (AWS).
+        </p>
+
+        <p className={styles.text}>
+          Sur le plan de la cybersécurité et de la supervision, j'ai élaboré des architectures de collecte
+          et d'analyse de journaux système sous Linux exploitant RSyslog et la solution SIEM Wazuh,
+          tout en développant des scripts Python pour l'extraction et l'analyse automatisée de télémétrie.
+          Côté développement, j'ai conçu des services web RESTful d'entreprise en Java (JAX-RS / Jakarta EE) ainsi que
+          des projets mobiles Android.
+        </p>
+      </div>
+
+      <h3 className={styles.subtitle}>Piliers techniques & Cloud Native</h3>
+      <div className={styles.piliersGrid}>
+        {piliers.map((p) => (
+          <div key={p.id} className={styles.pilierCard}>
+            <h4 className={styles.pilierTitle}>{p.titre}</h4>
+            <p className={styles.pilierDesc}>{p.description}</p>
+          </div>
+        ))}
+      </div>
 
       <h3 className={styles.subtitle}>Parcours universitaire</h3>
       <ul className={styles.parcours}>
         {parcours.map((etape) => (
-          <li key={etape.id}>
-            <strong>{etape.diplome}</strong> — {etape.etablissement}
+          <li key={etape.id} className={styles.parcoursItem}>
+            <div className={styles.parcoursHeader}>
+              <span className={styles.parcoursDiplome}>{etape.diplome}</span>
+              <span className={styles.parcoursEtablissement}>{etape.etablissement}</span>
+            </div>
+            <p className={styles.parcoursDetails}>{etape.details}</p>
           </li>
         ))}
       </ul>
@@ -45,3 +97,4 @@ function About() {
 }
 
 export default About;
+

@@ -2,28 +2,161 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 28px rgba(79, 209, 197, 0.16);
+}
+
+.card:hover .gaugeProgress {
+  filter: drop-shadow(0 0 6px rgba(79, 209, 197, 0.8));
+}
+
+.card:hover .countText {
+  color: var(--accent);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .nom {
   font-family: var(--font-body);
   font-size: 0.95rem;
+  font-weight: 600;
   color: var(--text);
-  margin-bottom: 12px;
+  margin: 0;
+  line-height: 1.35;
 }
 
-.bars {
+.statutBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 2px 8px;
+  letter-spacing: 0.2px;
+}
+
+.dot {
+  font-size: 0.55rem;
+}
+
+.badgeOperationnel {
+  color: var(--accent);
+  background: rgba(79, 209, 197, 0.12);
+  border: 1px solid rgba(79, 209, 197, 0.3);
+}
+
+.badgePratique {
+  color: #60A5FA;
+  background: rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+.tags {
   display: flex;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
 }
 
-.bar {
-  height: 6px;
-  flex: 1;
-  border-radius: 2px;
-  background: var(--border);
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: rgba(34, 49, 77, 0.6);
+  border-radius: 3px;
+  padding: 2px 6px;
+  line-height: 1.2;
 }
 
-.barFilled {
-  background: var(--accent);
+.gaugeContainer {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.svgGauge {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.gaugeBg {
+  fill: none;
+  stroke: rgba(34, 49, 77, 0.6);
+  stroke-width: 5;
+}
+
+.gaugeProgress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-dasharray: 163.36;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.25, 1, 0.5, 1), filter 0.3s ease;
+}
+
+.gaugePratique {
+  stroke: #60A5FA;
+}
+
+.card:hover .gaugePratique {
+  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.8));
+}
+
+.gaugeValue {
+  position: absolute;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.countText {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  transition: color 0.25s ease;
+}
+
+.percentSymbol {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-left: 1px;
+}
+
+
+

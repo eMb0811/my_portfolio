@@ -10,36 +10,111 @@
   margin-bottom: 32px;
 }
 
+.content {
+  max-width: 820px;
+}
+
 .text {
   font-family: var(--font-body);
   color: var(--text-muted);
-  max-width: 700px;
+  font-size: 1.02rem;
+  line-height: 1.75;
 }
 
 .text + .text {
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .subtitle {
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--accent);
   margin-top: 48px;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.piliersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.pilierCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pilierCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 6px 20px rgba(79, 209, 197, 0.1);
+}
+
+.pilierTitle {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.pilierDesc {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
 }
 
 .parcours {
   border-left: 2px solid var(--border);
-  padding-left: 20px;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.parcours li {
-  padding: 12px 0;
-  color: var(--text-muted);
-  font-size: 0.95rem;
+.parcoursItem {
+  position: relative;
 }
 
-.parcours li strong {
+.parcoursItem::before {
+  content: '';
+  position: absolute;
+  left: -31px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+}
+
+.parcoursHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.parcoursDiplome {
   color: var(--text);
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 500;
 }
+
+.parcoursEtablissement {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+.parcoursDetails {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
