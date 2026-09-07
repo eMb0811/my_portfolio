@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>CV — Mouhamet Barry | Ingénieur Cloud & DevOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #0d1322;
+      color: #f1f5f9;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .cv-container {
+      display: grid;
+      grid-template-columns: 72mm 1fr;
+      min-height: 297mm;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: #080e1b;
+      border-right: 1px solid #1e293b;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .profile-section {
+      text-align: center;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .avatar {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      border: 2px solid #00F5D4;
+      box-shadow: 0 0 16px rgba(0, 245, 212, 0.35);
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .name {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .title-badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      color: #00F5D4;
+      background: rgba(0, 245, 212, 0.1);
+      border: 1px solid rgba(0, 245, 212, 0.3);
+      border-radius: 4px;
+      padding: 3px 8px;
+      margin-top: 6px;
+    }
+
+    .side-block {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .side-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #00F5D4;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+    }
+
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 9.8px;
+      color: #94a3b8;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .contact-item svg {
+      width: 13px;
+      height: 13px;
+      color: #00F5D4;
+      flex-shrink: 0;
+    }
+
+    .skill-category {
+      margin-bottom: 8px;
+    }
+
+    .skill-category-title {
+      font-size: 9px;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 4px;
+    }
+
+    .skill-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .skill-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #121826;
+      border: 1px solid #1e293b;
+      color: #e2e8f0;
+    }
+
+    .skill-pill.accent {
+      border-color: rgba(0, 245, 212, 0.4);
+      color: #00F5D4;
+      background: rgba(0, 245, 212, 0.08);
+    }
+
+    .lang-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.5px;
+      color: #94a3b8;
+    }
+    .lang-item strong { color: #f1f5f9; }
+
+    /* MAIN CONTENT */
+    .main-content {
+      padding: 24px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .section-title span {
+      color: #00F5D4;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: #1e293b;
+    }
+
+    .summary-text {
+      color: #94a3b8;
+      font-size: 10.5px;
+      line-height: 1.55;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 14px;
+      border-left: 2px solid rgba(0, 245, 212, 0.3);
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00F5D4;
+      box-shadow: 0 0 8px rgba(0, 245, 212, 0.6);
+    }
+
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 3px;
+    }
+
+    .item-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .item-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      color: #00F5D4;
+      font-weight: 600;
+    }
+
+    .item-desc {
+      color: #94a3b8;
+      font-size: 9.8px;
+      line-height: 1.45;
+      margin-bottom: 4px;
+    }
+
+    .item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .item-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.8px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: rgba(18, 24, 38, 0.8);
+      border: 1px solid #1e293b;
+      color: #60a5fa;
+    }
+
+    .cv-footer {
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="cv-container">
+    <aside class="sidebar">
+      <div class="profile-section">
+        <img src="images/photo_mb.jpg" alt="Mouhamet Barry" class="avatar">
+        <h1 class="name">Mouhamet Barry</h1>
+        <div class="title-badge">Ingénierie Cloud & DevOps</div>
+      </div>
+
+      <div class="side-block">
+        <h2 class="side-title">Contact</h2>
+        <div class="contact-list">
+          <div class="contact-item">
+            <svg fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+            <span>elhadjibarry2001@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+            <span>Dakar (Mobilité / Remote)</span>
+          </div>
+          <a href="https://mbarry.is-a.dev" class="contact-item" style="color: #00F5D4;">
+            <svg fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"/></svg>
+            <span>mbarry.is-a.dev</span>
+          </a>
+          <a href="https://github.com/eMb0811" class="contact-item">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>github.com/eMb0811</span>
+          </a>
+          <a href="https://linkedin.com/in/mouhamed-barry-043375259" class="contact-item">
+            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            <span>linkedin.com/in/mouhamed-barry</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="side-block">
+        <h2 class="side-title">Compétences</h2>
+
+        <div class="skill-category">
+          <div class="skill-category-title">Cloud &amp; Conteneurs</div>
+          <div class="skill-badges">
+            <span class="skill-pill accent">Kubernetes</span>
+            <span class="skill-pill accent">Docker</span>
+            <span class="skill-pill accent">AWS EC2</span>
+            <span class="skill-pill">Minikube</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-category-title">DevOps &amp; IaC</div>
+          <div class="skill-badges">
+            <span class="skill-pill accent">Terraform</span>
+            <span class="skill-pill accent">Ansible</span>
+            <span class="skill-pill accent">GitHub Actions</span>
+            <span class="skill-pill">GitOps</span>
+            <span class="skill-pill">Caddy SSL</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-category-title">Sécurité SOC &amp; Observabilité</div>
+          <div class="skill-badges">
+            <span class="skill-pill accent">Wazuh SIEM</span>
+            <span class="skill-pill">RSyslog</span>
+            <span class="skill-pill">Prometheus</span>
+            <span class="skill-pill">Grafana</span>
+          </div>
+        </div>
+
+        <div class="skill-category">
+          <div class="skill-category-title">Systèmes &amp; Dév</div>
+          <div class="skill-badges">
+            <span class="skill-pill">Linux Ubuntu</span>
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">Bash</span>
+            <span class="skill-pill">Java REST</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-block">
+        <h2 class="side-title">Langues</h2>
+        <div class="lang-item"><strong>Français</strong><span>Courant</span></div>
+        <div class="lang-item"><strong>Anglais</strong><span>Technique</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section>
+        <div class="section-header"><h2 class="section-title"><span>01.</span> Profil Professionnel</h2><div class="section-line"></div></div>
+        <p class="summary-text">Étudiant en <strong>Master 1 Réseaux &amp; Télécommunications</strong> (UCAD), spécialisé en architectures Cloud Native résilientes et sécurité opérationnelle. Conception d'infrastructures automatisées (AWS, Kubernetes, Docker) et déploiement continu sécurisé via Terraform et Ansible. Recherche active d'un <strong>stage de fin d'études ou d'une alternance</strong> en Ingénierie Cloud / DevOps / SecOps.</p>
+      </section>
+
+      <section>
+        <div class="section-header"><h2 class="section-title"><span>02.</span> Réalisations &amp; Projets Clés</h2><div class="section-line"></div></div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="item-header"><span class="item-title">Portfolio Cloud Native en Production (Inception DevOps)</span><span class="item-badge">AWS • Terraform • Docker</span></div>
+            <p class="item-desc">Provisioning IaC Terraform, automatisation Ansible, conteneurisation Docker, reverse proxy Caddy avec HTTPS Let's Encrypt et déploiement continu autonome avec Watchtower.</p>
+            <div class="item-tags"><span class="item-tag">AWS EC2</span><span class="item-tag">Terraform</span><span class="item-tag">Ansible</span><span class="item-tag">Caddy SSL</span><span class="item-tag">Docker</span></div>
+          </div>
+          <div class="timeline-item">
+            <div class="item-header"><span class="item-title">Architecture SIEM Wazuh &amp; Supervision SOC</span><span class="item-badge">Sécurité • Observabilité</span></div>
+            <p class="item-desc">Centralisation et analyse des journaux d'événements Linux via RSyslog et Wazuh SIEM. Règles personnalisées de détection d'intrusions et d'alertes.</p>
+            <div class="item-tags"><span class="item-tag">Wazuh SIEM</span><span class="item-tag">RSyslog</span><span class="item-tag">Linux</span><span class="item-tag">Cybersécurité</span></div>
+          </div>
+          <div class="timeline-item">
+            <div class="item-header"><span class="item-title">Laboratoire &amp; Orchestration Kubernetes sur AWS</span><span class="item-badge">Cloud Native • Conteneurs</span></div>
+            <p class="item-desc">Déploiement d'un cluster Kubernetes (Minikube) sur EC2 Ubuntu : gestion des pods, services, ingress, stockage persistant et diagnostic réseau.</p>
+            <div class="item-tags"><span class="item-tag">Kubernetes</span><span class="item-tag">AWS</span><span class="item-tag">Docker</span><span class="item-tag">Linux</span></div>
+          </div>
+          <div class="timeline-item">
+            <div class="item-header"><span class="item-title">Pipelines CI/CD &amp; Analyse de Logs en Python</span><span class="item-badge">Automatisation • Scripting</span></div>
+            <p class="item-desc">Automatisation GitHub Actions, multi-stage Docker et scripts Python d'extraction et de parsing de logs pour détection automatique d'anomalies.</p>
+            <div class="item-tags"><span class="item-tag">GitHub Actions</span><span class="item-tag">Python</span><span class="item-tag">GHCR</span><span class="item-tag">Bash</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-header"><h2 class="section-title"><span>03.</span> Formation Académique</h2><div class="section-line"></div></div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="item-header"><span class="item-title">Master 1 Réseaux &amp; Télécommunications (RETEL)</span><span class="item-badge">2024 — Présent</span></div>
+            <p class="item-desc">Université Cheikh Anta Diop (UCAD) — Architectures réseaux, sécurité des infrastructures, virtualisation et administration Linux.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="item-header"><span class="item-title">Licence en Informatique</span><span class="item-badge">2021 — 2024</span></div>
+            <p class="item-desc">Université Cheikh Anta Diop (UCAD) — Algorithmique, programmation distribuée Java/REST, protocoles TCP/IP et bases de données.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="cv-footer"><span>Portfolio : https://mbarry.is-a.dev</span><span>Mis à jour en 2026</span></footer>
+    </main>
+  </div>
+</body>
+</html>
