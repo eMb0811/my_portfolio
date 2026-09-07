@@ -38,6 +38,17 @@ function Hero() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </a>
+          <a
+            href="/cv-mouhamed-barry.pdf"
+            download="CV_Mouhamet_Barry.pdf"
+            className={styles.cvBtn}
+            title="Télécharger mon CV (PDF)"
+          >
+            <svg className={styles.cvIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>CV PDF</span>
+          </a>
           <a href="#contact" className={styles.secondaryBtn}>
             <svg className={styles.mailIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

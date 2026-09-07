@@ -1,0 +1,11 @@
+{
+    email elhadjibarry2001@gmail.com
+}
+
+mbarry.is-a.dev {
+    reverse_proxy portfolio:80
+}
+
+:80 {
+    reverse_proxy portfolio:80
+}

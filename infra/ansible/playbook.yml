@@ -56,12 +56,35 @@
     - name: Télécharger la dernière image depuis GHCR
       command: docker pull {{ image }}
 
-    - name: Arrêter l'ancien conteneur s'il existe
+    - name: Créer le dossier de configuration Caddy
+      file:
+        path: /home/ubuntu/caddy
+        state: directory
+        mode: "0755"
+
+    - name: Copier la configuration Caddyfile
+      copy:
+        src: ../caddy/Caddyfile
+        dest: /home/ubuntu/caddy/Caddyfile
+        mode: "0644"
+
+    - name: Créer le réseau Docker portfolio-net s'il n'existe pas
+      command: docker network create portfolio-net
+      failed_when: false
+
+    - name: Arrêter l'ancien conteneur portfolio s'il existe
       command: docker rm -f portfolio
       failed_when: false
 
-    - name: Lancer le nouveau conteneur
-      command: docker run -d -p 80:80 --name portfolio --restart always --env-file /home/ubuntu/portfolio.env {{ image }}
+    - name: Lancer le conteneur portfolio sur le réseau interne
+      command: docker run -d --name portfolio --network portfolio-net --restart always --env-file /home/ubuntu/portfolio.env {{ image }}
+
+    - name: Arrêter l'ancien conteneur caddy s'il existe
+      command: docker rm -f caddy
+      failed_when: false
+
+    - name: Lancer le conteneur Caddy pour HTTPS automatique et reverse proxy
+      command: docker run -d --name caddy --network portfolio-net --restart always -p 80:80 -p 443:443 -v /home/ubuntu/caddy/Caddyfile:/etc/caddy/Caddyfile:ro -v caddy_data:/data -v caddy_config:/config caddy:alpine
 
     - name: Arrêter l'ancien conteneur watchtower s'il existe
       command: docker rm -f watchtower
