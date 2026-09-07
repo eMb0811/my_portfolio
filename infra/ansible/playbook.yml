@@ -61,7 +61,7 @@
       failed_when: false
 
     - name: Lancer le nouveau conteneur
-      command: docker run -d -p 80:80 --name portfolio --restart always {{ image }}
+      command: docker run -d -p 80:80 --name portfolio --restart always --env-file /home/ubuntu/portfolio.env {{ image }}
 
     - name: Arrêter l'ancien conteneur watchtower s'il existe
       command: docker rm -f watchtower

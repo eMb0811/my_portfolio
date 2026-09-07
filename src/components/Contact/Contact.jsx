@@ -7,14 +7,42 @@ function Contact() {
   const [nom, setNom] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success' | 'error'
+  const [errorMessage, setErrorMessage] = useState('');
   const [ref, visible] = useReveal();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    alert(`Merci ${nom} ! Message envoyé (simulation).`);
-    setNom('');
-    setEmail('');
-    setMessage('');
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+      const apiEndpoint = baseUrl ? `${baseUrl}/api/contact` : '/api/contact';
+
+      const res = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nom, email, message }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || "Une erreur est survenue lors de l'envoi de votre message.");
+      }
+
+      setStatus('success');
+      setNom('');
+      setEmail('');
+      setMessage('');
+    } catch (err) {
+      console.error('Erreur contact:', err);
+      setStatus('error');
+      setErrorMessage(err.message || "Impossible d'envoyer votre message. Veuillez vérifier votre connexion ou m'écrire par email.");
+    }
   }
 
   return (
@@ -64,49 +92,98 @@ function Contact() {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.field}>
-            <label htmlFor="nom">Nom complet</label>
-            <input
-              id="nom"
-              type="text"
-              placeholder="Ex: Alexandre Dupont"
-              value={nom}
-              onChange={(e) => setNom(e.target.value)}
-              required
-            />
+        {status === 'success' ? (
+          <div className={styles.successCard}>
+            <div className={styles.successIconWrapper}>
+              <svg className={styles.successIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className={styles.successTitle}>Message envoyé avec succès !</h3>
+            <p className={styles.successText}>
+              Merci pour votre prise de contact. Votre email m'a été transmis directement et je vous répondrai dans les plus brefs délais.
+            </p>
+            <button
+              type="button"
+              className={styles.resetBtn}
+              onClick={() => setStatus('idle')}
+            >
+              Envoyer un autre message
+            </button>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className={styles.form}>
+            {status === 'error' && (
+              <div className={styles.errorBanner}>
+                <svg className={styles.errorIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className={styles.errorContent}>
+                  <strong>Erreur d'envoi</strong>
+                  <p>{errorMessage}</p>
+                </div>
+              </div>
+            )}
 
-          <div className={styles.field}>
-            <label htmlFor="email">Adresse email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="alexandre@entreprise.fr"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+            <div className={styles.field}>
+              <label htmlFor="nom">Nom complet</label>
+              <input
+                id="nom"
+                type="text"
+                placeholder="Ex: Alexandre Dupont"
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
+                required
+                disabled={status === 'loading'}
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label htmlFor="message">Votre message</label>
-            <textarea
-              id="message"
-              placeholder="Parlez-moi de vos besoins, d'un projet d'infrastructure ou d'une opportunité..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-            />
-          </div>
+            <div className={styles.field}>
+              <label htmlFor="email">Adresse email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="alexandre@entreprise.fr"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={status === 'loading'}
+              />
+            </div>
 
-          <button type="submit" className={styles.submitBtn}>
-            <span>Envoyer le message</span>
-            <svg className={styles.submitIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </button>
-        </form>
+            <div className={styles.field}>
+              <label htmlFor="message">Votre message</label>
+              <textarea
+                id="message"
+                placeholder="Parlez-moi de vos besoins, d'un projet d'infrastructure ou d'une opportunité..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+                disabled={status === 'loading'}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={`${styles.submitBtn} ${status === 'loading' ? styles.submitBtnLoading : ''}`}
+              disabled={status === 'loading'}
+            >
+              {status === 'loading' ? (
+                <>
+                  <span className={styles.spinner} />
+                  <span>Envoi en cours...</span>
+                </>
+              ) : (
+                <>
+                  <span>Envoyer le message</span>
+                  <svg className={styles.submitIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </>
+              )}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   );
