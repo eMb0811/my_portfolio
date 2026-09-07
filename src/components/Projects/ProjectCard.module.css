@@ -108,3 +108,19 @@
   color: var(--accent);
 }
 
+@media (max-width: 480px) {
+  .card {
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+
+  .titre {
+    font-size: 1.05rem;
+  }
+
+  .description {
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+  }
+}
+

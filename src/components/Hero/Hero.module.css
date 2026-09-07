@@ -41,11 +41,14 @@
   border-radius: 9999px;
   background: var(--surface);
   border: 1px solid var(--border-subtle);
-  font-size: 0.8rem;
+  font-size: clamp(0.72rem, 2.8vw, 0.82rem);
   font-weight: 600;
   color: var(--accent);
   margin-bottom: 28px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  max-width: 100%;
+  line-height: 1.4;
+  text-wrap: balance;
 }
 
 .badgePulse {
@@ -53,6 +56,7 @@
   height: 8px;
   border-radius: 9999px;
   background-color: var(--accent);
+  flex-shrink: 0;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
@@ -66,12 +70,13 @@
 }
 
 .title {
-  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-size: clamp(2rem, 5.5vw, 4rem);
   font-weight: 800;
   color: #ffffff;
   letter-spacing: -0.03em;
   line-height: 1.15;
   margin-bottom: 20px;
+  word-break: break-word;
 }
 
 .breakLine {
@@ -91,7 +96,7 @@
 }
 
 .text {
-  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
   color: var(--text-muted);
   max-width: 650px;
   margin: 0 auto 36px;
@@ -100,8 +105,9 @@
 
 .actions {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   width: 100%;
 }
@@ -111,15 +117,16 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 14px 28px;
+  padding: 13px 26px;
   border-radius: 12px;
   background: var(--accent);
   color: var(--bg);
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   text-decoration: none;
   box-shadow: 0 8px 24px rgba(0, 245, 212, 0.25);
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .primaryBtn:hover {
@@ -133,15 +140,16 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 14px 24px;
+  padding: 13px 24px;
   border-radius: 12px;
   background: var(--surface);
   border: 1px solid var(--border);
   color: #ffffff;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   text-decoration: none;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .secondaryBtn:hover {
@@ -161,12 +169,18 @@
   color: var(--accent);
 }
 
+.socialGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .iconBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -179,6 +193,33 @@
   color: var(--accent);
   transform: translateY(-2px);
   background: rgba(0, 245, 212, 0.05);
+}
+
+@media (max-width: 540px) {
+  .actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .primaryBtn,
+  .secondaryBtn {
+    width: 100%;
+    max-width: 380px;
+    padding: 13px 20px;
+  }
+
+  .socialGroup {
+    width: 100%;
+    max-width: 380px;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .iconBtn {
+    flex: 1;
+    max-width: 180px;
+  }
 }
 
 .techStrip {

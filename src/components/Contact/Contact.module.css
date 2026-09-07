@@ -37,8 +37,13 @@
 }
 
 @media (max-width: 640px) {
+  .contact {
+    padding: 70px 16px;
+  }
+
   .card {
-    padding: 32px 20px;
+    padding: 28px 18px;
+    border-radius: 20px;
   }
 }
 
@@ -217,5 +222,34 @@
 .submitIcon {
   width: 16px;
   height: 16px;
+}
+
+@media (max-width: 400px) {
+  .card {
+    padding: 24px 14px;
+    border-radius: 16px;
+  }
+
+  .socialStrip {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .socialPill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .field input,
+  .field textarea {
+    padding: 11px 13px;
+    font-size: 0.88rem;
+  }
+
+  .submitBtn {
+    font-size: 0.88rem;
+    padding: 13px 18px;
+  }
 }
 

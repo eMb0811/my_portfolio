@@ -38,32 +38,34 @@ function Hero() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </a>
-          <a href="mailto:elhadjibarry2001@gmail.com" className={styles.secondaryBtn}>
+          <a href="#contact" className={styles.secondaryBtn}>
             <svg className={styles.mailIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <span>Email</span>
+            <span>Me contacter</span>
           </a>
-          <a
-            href="https://github.com/eMb0811"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.iconBtn}
-            title="GitHub (eMb0811)"
-            aria-label="GitHub"
-          >
-            <GitHubIcon size={20} />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/mouhamed-barry-043375259"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.iconBtn}
-            title="LinkedIn (Mouhamed Barry)"
-            aria-label="LinkedIn"
-          >
-            <LinkedInIcon size={20} />
-          </a>
+          <div className={styles.socialGroup}>
+            <a
+              href="https://github.com/eMb0811"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.iconBtn}
+              title="GitHub (eMb0811)"
+              aria-label="GitHub"
+            >
+              <GitHubIcon size={20} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/mouhamed-barry-043375259"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.iconBtn}
+              title="LinkedIn (Mouhamed Barry)"
+              aria-label="LinkedIn"
+            >
+              <LinkedInIcon size={20} />
+            </a>
+          </div>
         </div>
 
         {/* Tech tags strip */}

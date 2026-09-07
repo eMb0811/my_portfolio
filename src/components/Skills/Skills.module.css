@@ -76,8 +76,33 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 18px;
+}
+
+@media (max-width: 640px) {
+  .skills {
+    padding: 70px 16px;
+  }
+
+  .header {
+    margin-bottom: 28px;
+  }
+
+  .filters {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .filterBtn {
+    padding: 7px 14px;
+    font-size: 0.78rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
 }
 
 

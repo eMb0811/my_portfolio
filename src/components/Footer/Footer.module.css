@@ -82,5 +82,16 @@
   font-size: 0.78rem;
   color: var(--text-dim);
   margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 28px 16px;
+  }
+
+  .links {
+    gap: 14px;
+  }
 }
 

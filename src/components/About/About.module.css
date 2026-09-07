@@ -352,4 +352,50 @@
   transform: translateY(-1px);
 }
 
+@media (max-width: 640px) {
+  .about {
+    padding: 70px 16px;
+  }
+
+  .profileCard {
+    padding: 24px 16px;
+  }
+
+  .piliersGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .parcours {
+    padding-left: 18px;
+  }
+
+  .parcoursItem::before {
+    left: -25px;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 30px;
+  }
+
+  .btnPrimary,
+  .btnSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .profileSocials {
+    grid-template-columns: 1fr;
+  }
+
+  .metaItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
+
 
