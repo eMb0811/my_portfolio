@@ -8,22 +8,15 @@ function useReveal() {
     const element = ref.current;
     if (!element) return;
 
-//const observer = new IntersectionObserver(
-  //([entry]) => {
-    //if (entry.isIntersecting) {
-      //setVisible(true);
-      //observer.unobserve(element);
-    //}
-  //},
-  //{ threshold: 0.15, rootMargin: '0px 0px -100px 0px' }
-//);
-
-const observer = new IntersectionObserver(
-  ([entry]) => {
-    setVisible(entry.isIntersecting);   // true en entrant, false en sortant
-  },
-  { threshold: 0.15 }
-);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(element);
+        }
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -30px 0px' }
+    );
 
     observer.observe(element);
 
