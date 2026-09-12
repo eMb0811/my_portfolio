@@ -31,6 +31,14 @@ resource "aws_security_group" "portfolio_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "Prometheus scraping Node Exporter"
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks  = [var.my_ip]
+  }
+
   egress {
     description = "Tout le trafic sortant autorise"
     from_port   = 0
