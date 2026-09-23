@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:cv": "node scripts/generate-cv-pdf.js",
     "start": "node server.js",
     "lint": "eslint .",
     "preview": "vite preview",
