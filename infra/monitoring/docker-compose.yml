@@ -12,5 +12,26 @@ services:
 
     restart: unless-stopped
 
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: nouvellecle
+      GF_SECURITY_ADMIN_USER: admin
+      GF_INSTALL_PLUGINS: grafana-piechart-panel,grafana-llm-app
+      GF_FEATURE_TOGGLES_ENABLE: "dashgpt"
+
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
 volumes:
   prometheus_data:
+  grafana-data:

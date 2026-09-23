@@ -1,0 +1,271 @@
+---
+- name: Installer et configurer Loki et Promtail pour la collecte des logs
+  hosts: portfolio
+  become: true
+
+  vars:
+    loki_version: "3.0.0"
+    promtail_version: "3.0.0"
+    arch: "linux-amd64"
+
+  tasks:
+
+    # --- 1. Prerequis ---
+    - name: Installer unzip
+      ansible.builtin.apt:
+        name: unzip
+        state: present
+        update_cache: yes
+
+    # --- 2. Installation de Loki ---
+    - name: Creer utilisateur systeme loki
+      ansible.builtin.user:
+        name: loki
+        system: true
+        shell: /usr/sbin/nologin
+        create_home: false
+
+    - name: Creer repertoires pour Loki
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: loki
+        group: loki
+        mode: "0755"
+      loop:
+        - /etc/loki
+        - /var/lib/loki
+        - /var/lib/loki/compactor
+        - /var/lib/loki/rules
+        - /var/lib/loki/chunks
+
+    - name: Telecharger Loki
+      ansible.builtin.get_url:
+        url: "https://github.com/grafana/loki/releases/download/v{{ loki_version }}/loki-{{ arch }}.zip"
+        dest: "/tmp/loki.zip"
+        mode: "0644"
+
+    - name: Extraire le binaire Loki
+      ansible.builtin.unarchive:
+        src: "/tmp/loki.zip"
+        dest: "/tmp"
+        remote_src: true
+
+    - name: Installer le binaire Loki dans /usr/local/bin
+      ansible.builtin.copy:
+        src: "/tmp/loki-{{ arch }}"
+        dest: "/usr/local/bin/loki"
+        owner: root
+        group: root
+        mode: "0755"
+        remote_src: true
+
+    - name: Deployer la configuration de Loki avec retention stricte
+      ansible.builtin.copy:
+        dest: "/etc/loki/loki-config.yml"
+        owner: loki
+        group: loki
+        mode: "0644"
+        content: |
+          auth_enabled: false
+
+          server:
+            http_listen_port: 3100
+            grpc_listen_port: 9096
+
+          common:
+            instance_addr: 127.0.0.1
+            path_prefix: /var/lib/loki
+            storage:
+              filesystem:
+                chunks_directory: /var/lib/loki/chunks
+                rules_directory: /var/lib/loki/rules
+            replication_factor: 1
+            ring:
+              kvstore:
+                store: inmemory
+
+          schema_config:
+            configs:
+              - from: 2024-01-01
+                store: tsdb
+                object_store: filesystem
+                schema: v13
+                index:
+                  prefix: index_
+                  period: 24h
+
+          compactor:
+            working_directory: /var/lib/loki/compactor
+            compactor_ring:
+              kvstore:
+                store: inmemory
+            retention_enabled: true
+            delete_request_store: filesystem
+            retention_delete_delay: 2h
+            retention_delete_worker_count: 150
+
+          limits_config:
+            retention_period: 168h
+            reject_old_samples: true
+            reject_old_samples_max_age: 168h
+
+    - name: Creer le service systemd pour Loki
+      ansible.builtin.copy:
+        dest: "/etc/systemd/system/loki.service"
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Loki log aggregator
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          User=loki
+          Group=loki
+          Type=simple
+          ExecStart=/usr/local/bin/loki -config.file=/etc/loki/loki-config.yml
+          Restart=always
+          RestartSec=5
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Redemarrer Loki pour appliquer la configuration
+      ansible.builtin.systemd:
+        name: loki
+        daemon_reload: true
+        state: restarted
+        enabled: true
+
+    # --- 3. Installation de Promtail ---
+    - name: Creer utilisateur systeme promtail
+      ansible.builtin.user:
+        name: promtail
+        system: true
+        shell: /usr/sbin/nologin
+        create_home: false
+        groups: adm
+
+    - name: Creer repertoires pour Promtail
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: promtail
+        group: promtail
+        mode: "0755"
+      loop:
+        - /etc/promtail
+        - /var/lib/promtail
+
+    - name: Telecharger Promtail
+      ansible.builtin.get_url:
+        url: "https://github.com/grafana/loki/releases/download/v{{ promtail_version }}/promtail-{{ arch }}.zip"
+        dest: "/tmp/promtail.zip"
+        mode: "0644"
+
+    - name: Extraire le binaire Promtail
+      ansible.builtin.unarchive:
+        src: "/tmp/promtail.zip"
+        dest: "/tmp"
+        remote_src: true
+
+    - name: Installer le binaire Promtail dans /usr/local/bin
+      ansible.builtin.copy:
+        src: "/tmp/promtail-{{ arch }}"
+        dest: "/usr/local/bin/promtail"
+        owner: root
+        group: root
+        mode: "0755"
+        remote_src: true
+
+    - name: Deployer la configuration de Promtail avec masquage PII
+      ansible.builtin.copy:
+        dest: "/etc/promtail/promtail-config.yml"
+        owner: promtail
+        group: promtail
+        mode: "0644"
+        content: |
+          server:
+            http_listen_port: 9080
+            grpc_listen_port: 0
+
+          positions:
+            filename: /var/lib/promtail/positions.yaml
+
+          clients:
+            - url: http://127.0.0.1:3100/loki/api/v1/push
+
+          scrape_configs:
+            - job_name: system_logs
+              static_configs:
+                - targets:
+                    - localhost
+                  labels:
+                    job: system_logs
+                    host: portfolio-server
+                    __path__: /var/log/*log
+
+              pipeline_stages:
+                - replace:
+                    expression: '(password|token|secret|api[_-]?key)["\s:=]+([^\s,"]+)'
+                    replace: '$1=[REDACTED]'
+
+            - job_name: syslog
+              static_configs:
+                - targets:
+                    - localhost
+                  labels:
+                    job: syslog
+                    host: portfolio-server
+                    __path__: /var/log/syslog
+
+              pipeline_stages:
+                - replace:
+                    expression: '(password|token|secret|api[_-]?key)["\s:=]+([^\s,"]+)'
+                    replace: '$1=[REDACTED]'
+
+    - name: Creer le service systemd pour Promtail
+      ansible.builtin.copy:
+        dest: "/etc/systemd/system/promtail.service"
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Promtail log collector
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          User=promtail
+          Group=promtail
+          Type=simple
+          ExecStart=/usr/local/bin/promtail -config.file=/etc/promtail/promtail-config.yml
+          Restart=always
+          RestartSec=5
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Redemarrer Promtail
+      ansible.builtin.systemd:
+        name: promtail
+        daemon_reload: true
+        state: restarted
+        enabled: true
+
+    # --- 4. Pare-feu local ---
+    - name: Autoriser le port 3100 sur UFW
+      ansible.builtin.command: ufw allow 3100/tcp
+      ignore_errors: true
+      changed_when: false
+
+    # --- 5. Nettoyage ---
+    - name: Supprimer les archives temporaires
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/loki.zip"
+        - "/tmp/loki-{{ arch }}"
+        - "/tmp/promtail.zip"
+        - "/tmp/promtail-{{ arch }}"

@@ -1,0 +1,54 @@
+﻿---
+- name: "Politique de gestion des logs : Sécurisation et bridage de l'hôte"
+  hosts: portfolio
+  become: true
+
+  tasks:
+
+    # 1. Protection du journal système (Journald)
+    - name: Configurer la limite de taille pour systemd-journald (200 Mo max)
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/journald.conf
+        regexp: '^#?SystemMaxUse='
+        line: 'SystemMaxUse=200M'
+        state: present
+      notify: Redémarrer journald
+
+    # 2. Protection des conteneurs Docker
+    - name: Configurer la rotation automatique des logs Docker
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        mode: '0644'
+        content: |
+          {
+            "log-driver": "json-file",
+            "log-opts": {
+              "max-size": "10m",
+              "max-file": "3"
+            }
+          }
+      notify: Recharger Docker
+
+    # 3. Purge et libération d'espace immédiate
+    - name: Purger les vieux logs système au-delà de 200 Mo
+      ansible.builtin.command: journalctl --vacuum-size=200M
+      changed_when: false
+
+    - name: Nettoyer le cache apt
+      ansible.builtin.apt:
+        autoclean: yes
+
+    - name: Nettoyer les éléments Docker orphelins (images/conteneurs inutilisés)
+      ansible.builtin.command: docker system prune -f
+      changed_when: false
+
+  handlers:
+    - name: Redémarrer journald
+      ansible.builtin.systemd:
+        name: systemd-journald
+        state: restarted
+
+    - name: Recharger Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: reloaded
