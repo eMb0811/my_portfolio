@@ -129,11 +129,8 @@ function About() {
             </p>
 
             <p className={styles.text}>
-              Sur le plan de la cybersécurité et de la supervision, j'ai élaboré des architectures de collecte
-              et d'analyse de journaux système sous Linux exploitant RSyslog et la solution SIEM Wazuh,
-              tout en développant des scripts Python pour l'extraction et l'analyse automatisée de télémétrie.
-              Côté développement, j'ai conçu des services web RESTful d'entreprise en Java (JAX-RS / Jakarta EE) ainsi que
-              des projets mobiles Android.
+              Sur le plan de la cybersécurité et de la supervision, je sais élaborer des architectures de collecte
+              et d'analyse de journaux système sous Linux et je développe des outils Python pour l'extraction et l'analyse de données de télémétrie.
             </p>
           </div>
 
