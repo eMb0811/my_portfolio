@@ -76,6 +76,18 @@
       command: docker rm -f portfolio
       failed_when: false
 
+    - name: S'assurer que le fichier /home/ubuntu/portfolio.env existe
+      copy:
+        content: |
+          PORT=80
+          NODE_ENV=production
+          GMAIL_USER=elhadjibarry2001@gmail.com
+        dest: /home/ubuntu/portfolio.env
+        force: false
+        owner: ubuntu
+        group: ubuntu
+        mode: "0600"
+
     - name: Lancer le conteneur portfolio sur le réseau interne
       command: docker run -d --name portfolio --network portfolio-net --restart always --env-file /home/ubuntu/portfolio.env {{ image }}
 
