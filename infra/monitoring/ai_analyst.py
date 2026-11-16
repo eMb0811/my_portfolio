@@ -9,7 +9,7 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
 PROMETHEUS_URL = "http://localhost:9090"
-LOKI_URL = "http://52.203.14.122:3100"
+LOKI_URL = "http://54.226.101.16:3100"
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL = "llama3.2:3b"
 
@@ -102,7 +102,7 @@ def main():
     logs_context = "\n".join([f"- {l}" for l in recent_errors]) if recent_errors else "Aucun log d'erreur recent."
 
     prompt = f"""Tu es un ingenieur SRE Senior expert en observabilite (Prometheus, Loki, Linux).
-Voici la telemetrie complete en direct du VPS (52.203.14.122) :
+Voici la telemetrie complete en direct du VPS (54.226.101.16) :
 
 METRIQUES (Prometheus) :
 - Statut Node Exporter : {'UP (en ligne)' if up == 1 else 'DOWN (hors ligne)'}

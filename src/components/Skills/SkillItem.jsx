@@ -9,8 +9,7 @@ function SkillItem({ nom, statut, tags = [], pourcentage = 0, isVisible = true, 
 
   useEffect(() => {
     if (!isVisible) {
-      setCount(0);
-      return;
+      return undefined;
     }
 
     let start = 0;
@@ -83,7 +82,7 @@ function SkillItem({ nom, statut, tags = [], pourcentage = 0, isVisible = true, 
           />
         </svg>
         <div className={styles.gaugeValue}>
-          <span className={styles.countText}>{count}</span>
+          <span className={styles.countText}>{isVisible ? count : 0}</span>
           <span className={styles.percentSymbol}>%</span>
         </div>
       </div>

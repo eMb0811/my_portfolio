@@ -14,7 +14,7 @@ function Footer() {
         <div className={styles.brandCol}>
           <span className={styles.brandCode}>&lt;/&gt;</span>
           <span className={styles.brandName}>mouhamet.barry()</span>
-          <span className={styles.brandDesc}>— Ingénierie Cloud Native &amp; DevOps</span>
+          <span className={styles.brandDesc}>— Ingénierie Cloud, DevSecOps, SOC &amp; Réseaux Télécoms</span>
         </div>
 
         <div className={styles.links}>

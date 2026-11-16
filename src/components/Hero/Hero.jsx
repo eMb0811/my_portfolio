@@ -13,33 +13,33 @@ function Hero() {
         {/* Role badge pill */}
         <div className={styles.roleBadge}>
           <span className={styles.badgePulse} />
-          <span>Ingénierie Cloud &amp; DevOps • Sécurité SOC • Réseaux Télécoms</span>
+          <span>Ingénierie Cloud, DevSecOps, Cybersécurité SOC &amp; Réseaux Télécoms</span>
         </div>
 
         {/* Headline */}
         <h1 className={styles.title}>
-          Architecture Cloud Native, <br className={styles.breakLine} />
+          Infrastructures Cloud-Native, <br className={styles.breakLine} />
           <span className={styles.gradientText}>
-            automatisation &amp; observabilité.
+            automatisation DevSecOps &amp; SOC 360°.
           </span>
         </h1>
 
         {/* Subtitle */}
         <p className={styles.text}>
-          Étudiant en Master 1 Réseaux &amp; Télécommunications (UCAD).
-          Je conçois et déploie des infrastructures résilientes, sécurisées et automatisées.
+          Étudiant en Master 1 Réseaux &amp; Télécommunications (RETEL — UCAD) et diplômé en Informatique.
+          Je conçois, sécurise et supervise des architectures distribuées de bout en bout (AWS, Proxmox VE, Kubernetes, Terraform, Ansible, Suricata &amp; Prometheus/Grafana) — en recherche active de stage.
         </p>
 
         {/* CTAs */}
         <div className={styles.actions}>
           <a href="#projects" className={styles.primaryBtn}>
-            <span>Explorer les projets</span>
+            <span>Explorer les 13 projets</span>
             <svg className={styles.btnIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </a>
           <a
-            href="/cv-mouhamed-barry.pdf"
+            href={`${import.meta.env.BASE_URL}cv-mouhamed-barry.pdf`}
             download="CV_Mouhamet_Barry.pdf"
             className={styles.cvBtn}
             title="Télécharger mon CV (PDF)"
@@ -47,7 +47,7 @@ function Hero() {
             <svg className={styles.cvIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <span>CV PDF</span>
+            <span>Télécharger CV (PDF)</span>
           </a>
           <a href="#contact" className={styles.secondaryBtn}>
             <svg className={styles.mailIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,12 +81,12 @@ function Hero() {
 
         {/* Tech tags strip */}
         <div className={styles.techStrip}>
-          <span className={styles.techBadge}>Kubernetes</span>
-          <span className={styles.techBadge}>Terraform</span>
-          <span className={styles.techBadge}>Docker</span>
-          <span className={styles.techBadge}>CI/CD GitOps</span>
-          <span className={styles.techBadge}>Prometheus / Grafana</span>
-          <span className={styles.techBadge}>Wazuh SIEM</span>
+          <span className={styles.techBadge}>AWS • Terraform • Ansible</span>
+          <span className={styles.techBadge}>Kubernetes (K3s / Kind) &amp; Docker</span>
+          <span className={styles.techBadge}>Proxmox VE 8 (LXC / QEMU)</span>
+          <span className={styles.techBadge}>pfSense • Cisco 802.1Q • BIND9</span>
+          <span className={styles.techBadge}>Prometheus • Grafana • Loki • ClickHouse</span>
+          <span className={styles.techBadge}>Suricata IDS • Wazuh SIEM • Self-Healing</span>
         </div>
       </div>
     </header>
@@ -94,4 +94,3 @@ function Hero() {
 }
 
 export default Hero;
-

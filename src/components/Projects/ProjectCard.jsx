@@ -1,79 +1,140 @@
 import styles from './ProjectCard.module.css';
 import { GitHubIcon } from '../common/Icons.jsx';
 
-function getProjectIcon(id) {
+function getProjectIcon(id, categorie) {
   switch (id) {
-    case 'siem-wazuh':
+    case 'supervision-securite-remediation-proxmox':
+    case 'architecture-noc-soc-360-lab':
+    case 'siem-wazuh-rsyslog':
       return (
         <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       );
-    case 'cicd-docker':
-      return (
-        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-      );
-    case 'k8s-aws':
+    case 'projet_cotisation_java':
+    case 'my_portfolio':
+    case 'meteo-app':
       return (
         <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
         </svg>
       );
-    case 'python-logs':
-      return (
-        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      );
-    case 'java-jaxrs':
+    case 'reseau-multi-vlan-proxmox':
+    case 'dns-hierarchique-proxmox-bind9':
+    case 'infrastructure-hebergement-ispconfig':
       return (
         <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
         </svg>
       );
-    case 'android-app':
-    default:
+    case 'eduflow':
+      return (
+        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      );
+    case 'senevent':
       return (
         <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
         </svg>
       );
+    default:
+      if (categorie && categorie.includes('Sécurité')) {
+        return (
+          <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        );
+      }
+      return (
+        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      );
   }
 }
 
-function ProjectCard({ id, titre, description, tags }) {
+function ProjectCard({
+  id,
+  titre,
+  categorie,
+  badgeContexte,
+  description,
+  highlights = [],
+  tags = [],
+  githubUrl = 'https://github.com/eMb0811',
+  liveUrl,
+}) {
   return (
-    <div className={styles.card}>
+    <article className={styles.card}>
       <div className={styles.cardTop}>
         <div className={styles.headerRow}>
-          <span className={styles.iconBox}>
-            {getProjectIcon(id)}
-          </span>
-          <a
-            href="https://github.com/eMb0811"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.externalLink}
-            title="Voir le dépôt GitHub"
-            aria-label="Voir le dépôt GitHub"
-          >
-            <GitHubIcon size={18} />
-          </a>
+          <div className={styles.iconAndBadge}>
+            <span className={styles.iconBox}>
+              {getProjectIcon(id, categorie)}
+            </span>
+            {badgeContexte && (
+              <span className={styles.contextBadge}>{badgeContexte}</span>
+            )}
+          </div>
+          {categorie && (
+            <span className={styles.domainPill}>{categorie}</span>
+          )}
         </div>
+
         <h3 className={styles.titre}>{titre}</h3>
         <p className={styles.description}>{description}</p>
+
+        {highlights && highlights.length > 0 && (
+          <ul className={styles.highlightsList}>
+            {highlights.map((item, idx) => (
+              <li key={idx} className={styles.highlightItem}>
+                <span className={styles.highlightBullet} aria-hidden="true">▹</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
-      <div className={styles.tagsContainer}>
-        {tags.map((tag) => (
-          <span key={tag} className={styles.tag}>{tag}</span>
-        ))}
+      <div className={styles.cardBottom}>
+        <div className={styles.tagsContainer}>
+          {tags.map((tag) => (
+            <span key={tag} className={styles.tag}>{tag}</span>
+          ))}
+        </div>
+
+        <div className={styles.cardActions}>
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.actionBtn}
+            title="Consulter le code source et la documentation sur GitHub"
+          >
+            <GitHubIcon size={16} />
+            <span>Code &amp; Doc GitHub</span>
+          </a>
+
+          {liveUrl && (
+            <a
+              href={liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${styles.actionBtn} ${styles.actionBtnLive}`}
+              title="Ouvrir la démonstration en ligne"
+            >
+              <svg className={styles.liveIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              <span>Démo Live</span>
+            </a>
+          )}
+        </div>
       </div>
-    </div>
+    </article>
   );
 }
 
 export default ProjectCard;
-

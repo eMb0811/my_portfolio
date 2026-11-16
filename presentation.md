@@ -1,13 +1,14 @@
-Actuellement étudiant en Master 1 Réseaux et Télécommunications (RETEL) à la Faculté des Sciences et Techniques de l'Université Cheikh Anta Diop de Dakar (UCAD), je vous sollicite pour une opportunité de stage au sein de vos équipes d'ingénierie Cloud et DevOps.
+Actuellement étudiant en Master 1 Réseaux et Télécommunications (RETEL) à la Faculté des Sciences et Techniques de l'Université Cheikh Anta Diop de Dakar (UCAD) et titulaire d'une Licence en Informatique, je vous sollicite pour une opportunité de stage ou d'alternance au sein de vos équipes d'ingénierie Cloud, DevSecOps, Cybersécurité SOC ou Réseaux & Systèmes.
 
-Fort d'une formation solide en télécommunications et systèmes informatiques, j'ai axé mes projets et mon apprentissage sur l'industrialisation, la conteneurisation et la sécurité des infrastructures modernes :
+Fort d'une double compétence alliant les infrastructures réseaux/télécoms et le génie logiciel, j'ai orienté mes projets et travaux pratiques vers l'automatisation, la haute disponibilité et la sécurité opérationnelle :
 
-DevOps & Conteneurisation : Conception et automatisation de pipelines CI/CD via GitHub Actions, conteneurisation d'applications avec Docker et étude du déploiement sous Kubernetes.
-Cybersécurité & Supervision (SOC) : Élaboration d'architectures de collecte et d'analyse de journaux système Linux en utilisant RSyslog et la solution SIEM Wazuh.
-Automatisation & Développement : Rédaction de scripts Python pour l'analyse automatisée de logs, développement de services web RESTful en Java (JAX-RS) et projets mobiles Android.
-Systèmes & Réseaux : Solides fondamentaux en administration de serveurs Linux et Windows Server, gestion réseau et virtualisation.
+- Cloud Computing, IaC & DevSecOps : Provisioning d'infrastructures multi-nœuds sur AWS (VPC, EC2, ECR) avec Terraform, automatisation de la configuration via Ansible, orchestration de conteneurs sous Kubernetes (K3s, Kind, Minikube) et Docker multi-stage, et intégration de pipelines CI/CD GitHub Actions incluant le scan de vulnérabilités Trivy, Caddy SSL et Watchtower.
+- Cybersécurité, SOC 360° & Observabilité AIOps : Conception d'architectures NOC/SOC unifiées (Prometheus, VictoriaMetrics, Grafana Alerting-as-Code, Loki, Promtail, Grafana Alloy, ClickHouse Forensics), détection d'intrusions réseau et hôte (Suricata IDS via Port Mirroring Open vSwitch SPAN, Wazuh SIEM, RSyslog) et développement de démons Python d'auto-réparation (Self-Healing), de quarantaine chirurgicale d'IP (pfSense / iptables) et d'audit SRE assisté par LLM (Ollama LLaMA 3.2).
+- Réseaux, Télécoms & Virtualisation : Administration de clusters Proxmox VE 8 (plus de 20 conteneurs LXC et VMs QEMU), commutation physique Cisco Catalyst 2950G (Trunk 802.1Q, Spanning-Tree Portfast), routage Linux Ubuntu (Netplan, NAT iptables, ISC-DHCP), interconnexion OpenVPN Site-to-Site pfSense, contrôle d'accès AAA (FreeRADIUS / OpenLDAP), infrastructure DNS hiérarchique mondiale BIND9 et hébergement multidomaine ISPConfig 3 (Nginx, Redis, Postfix/Dovecot).
+- Développement Full-Stack, Mobile & IA : Réalisation d'applications d'entreprise en Java 17 / Jakarta EE 10 (JPA/Hibernate, PostgreSQL 16, OpenPDF), Python / Django 4.2 DRF (Webhooks HMAC Wave & Orange Money, Pytest), TypeScript / Next.js 14-15 & React 19 (PWA, Gemini Vision OCR & RAG SSE lors du Hackathon Open Source × AI 2026) et applications mobiles React Native / Expo EAS (APK Android).
 
-Intégrer vos équipes représente pour moi l'opportunité de mettre en pratique mes compétences techniques au service de vos projets de transformation numérique et de gestion d'infrastructures Cloud, tout en apprenant au contact de professionnels chevronnés.
-reux, autonome et force de proposition, je serais ravi d'échanger avec vous lors d'un entretien afin de vous présenter de vive voix mon parcours et mes réalisations.
+Intégrer vos équipes représente pour moi l'opportunité de mettre immédiatement en pratique ces réalisations concrètes au service de vos projets d'infrastructure Cloud, d'automatisation DevSecOps et de supervision sécurité, tout en apprenant au contact d'ingénieurs expérimentés.
+
+Rigoureux, autonome et force de proposition, je serais ravi d'échanger avec vous lors d'un entretien afin de vous présenter de vive voix mon parcours et mes architectures en fonctionnement.
 
 Je vous remercie pour l'attention portée à ma candidature et vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées.

@@ -7,37 +7,50 @@ const parcours = [
   {
     id: 'm1',
     diplome: 'Master 1 – Réseaux et Télécommunications (RETEL)',
-    etablissement: 'Faculté des Sciences et Techniques – Université Cheikh Anta Diop de Dakar (en cours)',
-    details: 'Approfondissement en architectures réseaux avancées, sécurité des infrastructures, virtualisation, protocoles télécoms et gestion des systèmes distribués.',
+    etablissement: 'Faculté des Sciences et Techniques (FST) – Université Cheikh Anta Diop de Dakar (2025 – Présent)',
+    details:
+      'Modules clés : Cloud Computing & Networking AWS (aligné SAA-C03), Administration de services réseaux (Proxmox VE, BIND9, ISPConfig, pfSense, FreeRADIUS/OpenLDAP), Systèmes répartis, Réseaux Haut Débit & Technologies d’accès, Développement d’Applications Web & Mobile (DAWM) et Machine Learning.',
   },
   {
     id: 'l3',
-    diplome: 'Licence 3 – Informatique',
-    etablissement: 'Faculté des Sciences et Techniques – Université Cheikh Anta Diop de Dakar',
-    details: 'Fondamentaux des systèmes d\'exploitation (Linux), algorithmique, programmation orientée objet (Java, Python), bases de données relationnelles et génie logiciel.',
+    diplome: 'Licence en Informatique (L1 → L3)',
+    etablissement: 'Faculté des Sciences et Techniques (FST) – Université Cheikh Anta Diop de Dakar (2022 – 2025)',
+    details:
+      'Modules clés : Administration Systèmes Linux (cursus LPIC-1), Réseaux & Routage Cisco (VLAN 802.1Q, STP, RIP, OSPF, EIGRP, ACL, IPv6), Programmation Java distribuée & Jakarta EE (RMI, Sockets multithread, Servlets/JSP, Hibernate, JAX-RS), Bases de données relationnelles (PostgreSQL, MySQL, Triggers) et Développement Mobile Android natif.',
+  },
+  {
+    id: 'hackathon',
+    diplome: 'Hackathon Open Source × AI 2026 — Galsen DEV / Hacktoberfest Dakar',
+    etablissement: 'Conception & Déploiement de la plateforme EdTech IA « EduFlow » (Octobre 2026)',
+    details:
+      'Orchestration multi-agents IA, extraction d’emplois du temps par Gemini Vision OCR, tuteur pédagogique RAG en streaming SSE avec rendu mathématique KaTeX, génération de Flashcards 3D / QCM et conteneurisation Docker Compose.',
   },
 ];
 
 const piliers = [
   {
-    id: 'cloud-native',
-    titre: 'Cloud Native & Orchestration',
-    description: 'Déploiement et gestion d\'applications distribuées avec Kubernetes (pods, ingress, services, volumes) et conteneurisation multi-stage optimisée via Docker.',
+    id: 'cloud-devsecops',
+    titre: 'Cloud (AWS), IaC & DevSecOps',
+    description:
+      'Provisioning d’architectures multi-nœuds sur AWS (EC2, VPC, ECR) avec Terraform, gestion de configuration Ansible, orchestration Kubernetes (K3s, Kind, Minikube), Docker multi-stage et pipelines CI/CD GitHub Actions sécurisés par Trivy, Caddy SSL et Watchtower.',
   },
   {
-    id: 'devops-cicd',
-    titre: 'DevOps & Industrialisation CI/CD',
-    description: 'Automatisation complète du cycle de livraison continue via GitHub Actions, intégration de tests, build et publication vers des registres de conteneurs (GHCR).',
+    id: 'soc-observabilite',
+    titre: 'Cybersécurité, SOC 360° & AIOps',
+    description:
+      'Supervision haute résolution et corrélation d’attaques via Prometheus, VictoriaMetrics, Grafana (Alerting-as-Code), Loki/Promtail, Alloy et ClickHouse. Détection d’intrusions Suricata IDS (OVS SPAN) & Wazuh SIEM, auto-réparation (Self-Healing < 10s), quarantaine chirurgicale d’IP sur pfSense/iptables et diagnostic SRE via LLaMA 3.2.',
   },
   {
-    id: 'cloud-iac',
-    titre: 'Cloud (AWS) & IaC',
-    description: 'Conception d\'infrastructures résilientes sur Amazon Web Services (EC2, VPC, Security Groups) et automatisation du provisioning avec Terraform.',
+    id: 'reseaux-telecoms',
+    titre: 'Réseaux, Télécoms & Virtualisation',
+    description:
+      'Administration de clusters Proxmox VE 8 (20+ conteneurs LXC & VMs QEMU, pools RBAC), commutation physique Cisco Catalyst 2950G (Trunk 802.1Q, STP Portfast), routeurs Linux Ubuntu (Netplan, NAT iptables), tunnels OpenVPN Site-to-Site pfSense, portail captif AAA (FreeRADIUS/OpenLDAP) et arbre DNS mondial BIND9.',
   },
   {
-    id: 'soc-securite',
-    titre: 'Sécurité, SOC & Supervision',
-    description: 'Centralisation de logs Linux avec RSyslog, corrélation et détection d\'intrusions via le SIEM Wazuh, combinées à des scripts Python d\'analyse automatisée.',
+    id: 'dev-fullstack-ia',
+    titre: 'Dév Full-Stack, Mobile & IA Générative',
+    description:
+      'Conception d’applications robustes en Java 17 / Jakarta EE 10 (Hibernate, Tomcat 10, OpenPDF), Python / Django 4.2 DRF (PostgreSQL, Webhooks HMAC Wave/Orange Money) et TypeScript / Next.js 15 / React 19, ainsi que d’applications mobiles React Native / Expo EAS (APK Android) et d’assistants RAG sous Google Gemini.',
   },
 ];
 
@@ -56,7 +69,7 @@ function About() {
             </div>
 
             <h3 className={styles.profileName}>Mouhamet Barry</h3>
-            <p className={styles.profileRole}>Master 1 RETEL • Cloud &amp; DevOps</p>
+            <p className={styles.profileRole}>Master 1 RETEL • Cloud, DevSecOps &amp; SOC</p>
 
             <div className={styles.metaList}>
               <div className={styles.metaItem}>
@@ -68,8 +81,8 @@ function About() {
                 <span className={styles.metaValue}>Master 1 RETEL (UCAD)</span>
               </div>
               <div className={styles.metaItem}>
-                <span className={styles.metaLabel}>Spécialité :</span>
-                <span className={styles.metaValue}>Kubernetes, Docker, CI/CD</span>
+                <span className={styles.metaLabel}>Focus :</span>
+                <span className={styles.metaValue}>Cloud, K8s, SOC &amp; Réseaux</span>
               </div>
               <div className={styles.metaItem}>
                 <span className={styles.metaLabel}>Statut :</span>
@@ -107,34 +120,37 @@ function About() {
         {/* Right Main Content */}
         <div className={styles.mainContent}>
           <div className={styles.sectionBadge}>
-            <span className={styles.badgeNum}>01.</span> APERÇU &amp; PROFIL
+            <span className={styles.badgeNum}>01.</span> APERÇU &amp; PROFIL D’INGÉNIERIE
           </div>
           <h2 className={styles.title}>
-            Concevoir des infrastructures Cloud Native résilientes et automatisées.
+            Bâtir, automatiser et sécuriser des infrastructures Cloud, Réseaux et SOC résilientes.
           </h2>
 
           <div className={styles.content}>
             <p className={styles.text}>
-              Actuellement étudiant en Master 1 Réseaux et Télécommunications (RETEL) à l'Université
-              Cheikh Anta Diop de Dakar (UCAD) et titulaire d'une Licence en Informatique,
-              j'ai orienté mon apprentissage vers l'ingénierie Cloud, le DevOps et
-              l'industrialisation des infrastructures modernes.
+              Actuellement étudiant en <strong>Master 1 Réseaux et Télécommunications (RETEL)</strong> à l’Université
+              Cheikh Anta Diop de Dakar (UCAD) et diplômé d’une <strong>Licence en Informatique</strong>, je combine
+              une double compétence en <strong>ingénierie des infrastructures réseaux/systèmes</strong> et en
+              <strong> développement logiciel Cloud-Native</strong>.
             </p>
 
             <p className={styles.text}>
-              Passionné par l'écosystème Cloud Native, je concentre mes réalisations sur la conteneurisation
-              avec Docker et l'orchestration sous Kubernetes. J'automatise le cycle de vie
-              logiciel grâce à des pipelines CI/CD robustes avec GitHub Actions, permettant des déploiements
-              reproductibles, sécurisés et sans friction, tant sur des serveurs dédiés que dans des environnements Cloud (AWS).
+              À travers mes travaux pratiques avancés et mes projets personnels sur GitHub, j’ai déployé et interconnecté
+              des environnements complets : clusters <strong>Kubernetes (K3s, Kind)</strong> sur <strong>AWS</strong> provisionnés
+              par <strong>Terraform et Ansible</strong>, infrastructures virtualisées sous <strong>Proxmox VE 8</strong> (plus de 20 conteneurs LXC et VMs),
+              segmentation matérielle <strong>Cisco Catalyst 802.1Q</strong>, tunnels <strong>OpenVPN Site-to-Site pfSense</strong>,
+              fédération d’identité <strong>FreeRADIUS / OpenLDAP</strong> et arbre <strong>DNS mondial BIND9</strong>.
             </p>
 
             <p className={styles.text}>
-              Sur le plan de la cybersécurité et de la supervision, je sais élaborer des architectures de collecte
-              et d'analyse de journaux système sous Linux et je développe des outils Python pour l'extraction et l'analyse de données de télémétrie.
+              Passionné par la <strong>cybersécurité opérationnelle (SecOps / SOC) et le SRE</strong>, j’implémente des architectures
+              d’observabilité 360° (<strong>Prometheus, VictoriaMetrics, Grafana, Loki, Alloy, ClickHouse</strong>), des sondes de détection
+              d’intrusions (<strong>Suricata IDS en Port Mirroring OVS SPAN, Wazuh SIEM</strong>) ainsi que des moteurs Python d’<strong>auto-réparation
+              (Self-Healing)</strong>, de <strong>quarantaine chirurgicale d’IP</strong> et d’<strong>analyse SRE assistée par IA (LLaMA 3.2 &amp; Gemini)</strong>.
             </p>
           </div>
 
-          <h3 className={styles.subtitle}>Piliers techniques &amp; Cloud Native</h3>
+          <h3 className={styles.subtitle}>Quatre domaines d’expertise complémentaires</h3>
           <div className={styles.piliersGrid}>
             {piliers.map((p) => (
               <div key={p.id} className={styles.pilierCard}>
@@ -144,7 +160,7 @@ function About() {
             ))}
           </div>
 
-          <h3 className={styles.subtitle}>Parcours universitaire</h3>
+          <h3 className={styles.subtitle}>Parcours universitaire &amp; Hackathon</h3>
           <ul className={styles.parcours}>
             {parcours.map((etape) => (
               <li key={etape.id} className={styles.parcoursItem}>
@@ -159,7 +175,7 @@ function About() {
 
           <div className={styles.actions}>
             <a
-              href="/cv-mouhamed-barry.pdf"
+              href={`${import.meta.env.BASE_URL}cv-mouhamed-barry.pdf`}
               download="CV_Mouhamet_Barry.pdf"
               className={styles.btnPrimary}
               title="Télécharger mon CV (PDF)"
@@ -180,4 +196,3 @@ function About() {
 }
 
 export default About;
-
