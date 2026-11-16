@@ -276,7 +276,7 @@ export function getApmStats(isAdmin = false) {
 
 // Router handler for APM API endpoints (Express and Connect/Vite compatible)
 export async function handleApmApi(req, res) {
-  const url = (req.url || '').split('?')[0];
+  const url = (req.originalUrl || req.url || '').split('?')[0];
 
   // Enable CORS & JSON headers
   res.setHeader('Content-Type', 'application/json');
@@ -287,13 +287,13 @@ export async function handleApmApi(req, res) {
   const token = authHeader.replace(/^Bearer\s+/, '') || adminKey;
   const isAdmin = adminTokens.has(token);
 
-  if (url === '/api/monitor/stats' || url.endsWith('/api/monitor/stats')) {
+  if (url.endsWith('/stats') || url.includes('/monitor/stats')) {
     const stats = getApmStats(isAdmin);
     res.statusCode = 200;
     return res.end(JSON.stringify(stats));
   }
 
-  if (url === '/api/monitor/ping' || url.endsWith('/api/monitor/ping')) {
+  if (url.endsWith('/ping') || url.includes('/monitor/ping')) {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', () => {
@@ -313,7 +313,7 @@ export async function handleApmApi(req, res) {
     return;
   }
 
-  if (url === '/api/monitor/auth' || url.endsWith('/api/monitor/auth')) {
+  if (url.endsWith('/auth') || url.includes('/monitor/auth')) {
     let body = '';
     req.on('data', chunk => { body += chunk; });
     req.on('end', () => {
@@ -335,7 +335,7 @@ export async function handleApmApi(req, res) {
     return;
   }
 
-  if (url === '/api/monitor/reset' || url.endsWith('/api/monitor/reset')) {
+  if (url.endsWith('/reset') || url.includes('/monitor/reset')) {
     if (!isAdmin) {
       res.statusCode = 403;
       return res.end(JSON.stringify({ error: 'Accès réservé aux administrateurs.' }));

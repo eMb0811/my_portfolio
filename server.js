@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(apmMiddleware);
 
 // APM & Live Visitors Monitoring API
-app.all(['/api/monitor/*', '/my_portfolio/api/monitor/*'], (req, res) => {
+app.use(['/api/monitor', '/my_portfolio/api/monitor'], (req, res) => {
   handleApmApi(req, res);
 });
 
