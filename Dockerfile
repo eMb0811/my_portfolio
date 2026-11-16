@@ -12,7 +12,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev
 COPY --from=build /app/dist ./dist
-COPY server.js ./
+COPY server.js apm.js ./
 ENV PORT=80
 ENV NODE_ENV=production
 EXPOSE 80
