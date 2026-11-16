@@ -82,6 +82,8 @@
           PORT=80
           NODE_ENV=production
           GMAIL_USER=elhadjibarry2001@gmail.com
+          ADMIN_MONITOR_PASSWORD=mbarry@admin2026
+          DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/1571841881220980746/WDiuWk_Jw-lgkp0CsOjJIXAorSgne_9_Iw90Rntf4yY3dwY_amrojV6DfaX_RfvbuKVY
         dest: /home/ubuntu/portfolio.env
         force: false
         owner: ubuntu

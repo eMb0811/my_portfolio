@@ -2,7 +2,8 @@ import crypto from 'crypto';
 
 // Configuration and State
 const ADMIN_PASSWORD = process.env.ADMIN_MONITOR_PASSWORD || 'mbarry@admin2026';
-const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || '';
+const DEFAULT_DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1571841881220980746/WDiuWk_Jw-lgkp0CsOjJIXAorSgne_9_Iw90Rntf4yY3dwY_amrojV6DfaX_RfvbuKVY';
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || DEFAULT_DISCORD_WEBHOOK;
 
 const startTime = Date.now();
 const MAX_LATENCIES = 120;
