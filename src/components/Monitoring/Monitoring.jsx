@@ -12,6 +12,14 @@ function formatUptime(totalSeconds = 0) {
   return `${minutes}m ${seconds}s`;
 }
 
+function getApiUrl(endpoint) {
+  if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+    return `https://mbarry.is-a.dev/api/${endpoint.replace(/^\/?(my_portfolio\/)?api\//, '')}`;
+  }
+  const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  return baseUrl ? `${baseUrl}${endpoint}` : endpoint;
+}
+
 function Monitoring({ onBack }) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -23,9 +31,7 @@ function Monitoring({ onBack }) {
   // Fetch telemetry data from server APM
   async function fetchStats() {
     try {
-      const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-      const url = baseUrl ? `${baseUrl}/api/monitor/stats` : '/api/monitor/stats';
-
+      const url = getApiUrl('/api/monitor/stats');
       const headers = {};
       if (adminToken) {
         headers['Authorization'] = `Bearer ${adminToken}`;
@@ -45,9 +51,7 @@ function Monitoring({ onBack }) {
   // Send periodic live ping for visitor tracking
   async function sendPing() {
     try {
-      const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-      const url = baseUrl ? `${baseUrl}/api/monitor/ping` : '/api/monitor/ping';
-
+      const url = getApiUrl('/api/monitor/ping');
       await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,8 +67,7 @@ function Monitoring({ onBack }) {
 
     async function loadStats() {
       try {
-        const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-        const url = baseUrl ? `${baseUrl}/api/monitor/stats` : '/api/monitor/stats';
+        const url = getApiUrl('/api/monitor/stats');
         const headers = {};
         if (adminToken) headers['Authorization'] = `Bearer ${adminToken}`;
         const res = await fetch(url, { headers });
@@ -97,9 +100,7 @@ function Monitoring({ onBack }) {
     setAuthError('');
 
     try {
-      const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-      const url = baseUrl ? `${baseUrl}/api/monitor/auth` : '/api/monitor/auth';
-
+      const url = getApiUrl('/api/monitor/auth');
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -133,8 +134,7 @@ function Monitoring({ onBack }) {
     }
 
     try {
-      const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-      const url = baseUrl ? `${baseUrl}/api/monitor/reset` : '/api/monitor/reset';
+      const url = getApiUrl('/api/monitor/reset');
 
       await fetch(url, {
         method: 'POST',

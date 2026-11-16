@@ -274,12 +274,49 @@ export function getApmStats(isAdmin = false) {
   };
 }
 
+// Helper to safely get body whether already parsed by Express (req.body) or streaming (Connect/Vite)
+async function parseRequestBody(req) {
+  if (req.body && typeof req.body === 'object') {
+    return req.body;
+  }
+  if (typeof req.body === 'string' && req.body) {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      return {};
+    }
+  }
+  if (req.readableEnded) {
+    return {};
+  }
+  return new Promise((resolve) => {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(body || '{}'));
+      } catch {
+        resolve({});
+      }
+    });
+    req.on('error', () => resolve({}));
+  });
+}
+
 // Router handler for APM API endpoints (Express and Connect/Vite compatible)
 export async function handleApmApi(req, res) {
   const url = (req.originalUrl || req.url || '').split('?')[0];
 
   // Enable CORS & JSON headers
   res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-key');
+
+  if (req.method === 'OPTIONS') {
+    res.statusCode = 204;
+    return res.end();
+  }
 
   // Verify Admin Auth
   const authHeader = req.headers['authorization'] || '';
@@ -294,45 +331,27 @@ export async function handleApmApi(req, res) {
   }
 
   if (url.endsWith('/ping') || url.includes('/monitor/ping')) {
-    let body = '';
-    req.on('data', chunk => { body += chunk; });
-    req.on('end', () => {
-      let path = '/';
-      try {
-        const parsed = JSON.parse(body || '{}');
-        if (parsed.path) path = parsed.path;
-      } catch {
-        // ignore
-      }
+    const parsed = await parseRequestBody(req);
+    const path = parsed?.path || '/';
 
-      touchVisitorSession(req, path);
-      const stats = getApmStats(isAdmin);
-      res.statusCode = 200;
-      return res.end(JSON.stringify({ success: true, liveVisitorsCount: stats.liveVisitorsCount }));
-    });
-    return;
+    touchVisitorSession(req, path);
+    const stats = getApmStats(isAdmin);
+    res.statusCode = 200;
+    return res.end(JSON.stringify({ success: true, liveVisitorsCount: stats.liveVisitorsCount }));
   }
 
   if (url.endsWith('/auth') || url.includes('/monitor/auth')) {
-    let body = '';
-    req.on('data', chunk => { body += chunk; });
-    req.on('end', () => {
-      try {
-        const { password } = JSON.parse(body || '{}');
-        if (password && password === ADMIN_PASSWORD) {
-          const newToken = 'admin_' + crypto.randomBytes(16).toString('hex');
-          adminTokens.add(newToken);
-          res.statusCode = 200;
-          return res.end(JSON.stringify({ success: true, token: newToken }));
-        }
-        res.statusCode = 401;
-        return res.end(JSON.stringify({ error: 'Mot de passe administrateur incorrect.' }));
-      } catch {
-        res.statusCode = 400;
-        return res.end(JSON.stringify({ error: 'Données invalides.' }));
-      }
-    });
-    return;
+    const parsed = await parseRequestBody(req);
+    const password = parsed?.password;
+
+    if (password && password.trim() === ADMIN_PASSWORD.trim()) {
+      const newToken = 'admin_' + crypto.randomBytes(16).toString('hex');
+      adminTokens.add(newToken);
+      res.statusCode = 200;
+      return res.end(JSON.stringify({ success: true, token: newToken }));
+    }
+    res.statusCode = 401;
+    return res.end(JSON.stringify({ error: 'Mot de passe administrateur incorrect.' }));
   }
 
   if (url.endsWith('/reset') || url.includes('/monitor/reset')) {

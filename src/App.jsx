@@ -17,8 +17,14 @@ function App() {
     const reportPresence = () => {
       setCurrentHash(window.location.hash);
       try {
-        const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-        const pingUrl = baseUrl ? `${baseUrl}/api/monitor/ping` : '/api/monitor/ping';
+        let pingUrl = '/api/monitor/ping';
+        if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
+          pingUrl = 'https://mbarry.is-a.dev/api/monitor/ping';
+        } else {
+          const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+          pingUrl = baseUrl ? `${baseUrl}/api/monitor/ping` : '/api/monitor/ping';
+        }
+
         fetch(pingUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
