@@ -1,6 +1,22 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import nodemailer from 'nodemailer'
+import { apmMiddleware, handleApmApi } from './apm.js'
+
+function monitoringApiDevPlugin() {
+  return {
+    name: 'monitoring-api-dev-plugin',
+    configureServer(server) {
+      server.middlewares.use(apmMiddleware);
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.includes('/api/monitor')) {
+          return handleApmApi(req, res);
+        }
+        next();
+      });
+    },
+  };
+}
 
 function contactApiDevPlugin() {
   return {
@@ -72,6 +88,6 @@ function contactApiDevPlugin() {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), contactApiDevPlugin()],
+  plugins: [react(), contactApiDevPlugin(), monitoringApiDevPlugin()],
   base: mode === 'docker' ? '/' : '/my_portfolio/',
 }))

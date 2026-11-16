@@ -3,11 +3,18 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
+import { apmMiddleware, handleApmApi } from './apm.js';
 
 const app = express();
 const PORT = process.env.PORT || 80;
 
 app.use(express.json());
+app.use(apmMiddleware);
+
+// APM & Live Visitors Monitoring API
+app.all(['/api/monitor/*', '/my_portfolio/api/monitor/*'], (req, res) => {
+  handleApmApi(req, res);
+});
 
 const GMAIL_USER = process.env.GMAIL_USER || 'elhadjibarry2001@gmail.com';
 const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;

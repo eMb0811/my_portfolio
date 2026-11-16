@@ -235,6 +235,31 @@
   background: rgba(0, 245, 212, 0.08);
 }
 
+.navLinkLive {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-color: rgba(0, 245, 212, 0.35);
+  color: #00F5D4 !important;
+  background: rgba(0, 245, 212, 0.05);
+}
+
+.liveIndicator {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00F5D4;
+  box-shadow: 0 0 8px #00F5D4;
+  animation: livePulseDot 1.5s infinite ease-in-out;
+}
+
+@keyframes livePulseDot {
+  0% { transform: scale(0.85); opacity: 0.6; }
+  50% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(0.85); opacity: 0.6; }
+}
+
 .headerButtons {
   display: grid;
   grid-template-columns: 1fr 1fr;

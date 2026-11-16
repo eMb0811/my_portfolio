@@ -7,6 +7,7 @@ const links = [
   { href: '#skills', label: 'Compétences' },
   { href: '#projects', label: 'Projets' },
   { href: '#contact', label: 'Contact' },
+  { href: '#monitoring', label: 'Observabilité Live', isLive: true },
 ];
 
 function Navbar() {
@@ -57,8 +58,13 @@ function Navbar() {
           <ul className={styles.links}>
             {links.map((link) => (
               <li key={link.href}>
-                <a href={link.href} onClick={() => setMenuOuvert(false)} className={styles.navLink}>
-                  {link.label}
+                <a
+                  href={link.href}
+                  onClick={() => setMenuOuvert(false)}
+                  className={`${styles.navLink} ${link.isLive ? styles.navLinkLive : ''}`}
+                >
+                  {link.isLive && <span className={styles.liveIndicator} />}
+                  <span>{link.label}</span>
                 </a>
               </li>
             ))}
