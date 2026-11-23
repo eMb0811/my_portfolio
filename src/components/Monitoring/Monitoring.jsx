@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import styles from './Monitoring.module.css';
 
 function formatUptime(totalSeconds = 0) {
@@ -21,12 +21,12 @@ function getApiUrl(endpoint) {
 }
 
 function Monitoring({ onBack }) {
+  const [adminToken, setAdminToken] = useState(() => localStorage.getItem('apm_admin_token') || '');
   const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [adminModalOpen, setAdminModalOpen] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(() => Boolean(localStorage.getItem('apm_admin_token')));
+  const [submitting, setSubmitting] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
-  const [adminToken, setAdminToken] = useState(() => localStorage.getItem('apm_admin_token') || '');
   const [expandedSessions, setExpandedSessions] = useState(() => new Set());
 
   const toggleExpand = (id) => {
@@ -38,76 +38,68 @@ function Monitoring({ onBack }) {
     });
   };
 
-  // Fetch telemetry data from server APM
-  async function fetchStats() {
+  const fetchStats = useCallback(async (tokenToUse) => {
+    if (!tokenToUse) {
+      setStats(null);
+      setCheckingAuth(false);
+      return;
+    }
+
     try {
       const url = getApiUrl('/api/monitor/stats');
-      const headers = {};
-      if (adminToken) {
-        headers['Authorization'] = `Bearer ${adminToken}`;
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${tokenToUse}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem('apm_admin_token');
+        setAdminToken('');
+        setStats(null);
+        setAuthError('Session administrateur expirée. Veuillez vous authentifier.');
+        setCheckingAuth(false);
+        return;
       }
 
-      const res = await fetch(url, { headers });
       if (res.ok) {
         const data = await res.json();
         setStats(data);
-        setLoading(false);
+        setCheckingAuth(false);
       }
     } catch (err) {
       console.warn('APM Fetch warning:', err.message);
+      setCheckingAuth(false);
     }
-  }
-
-  // Send periodic live ping for visitor tracking
-  async function sendPing() {
-    try {
-      const url = getApiUrl('/api/monitor/ping');
-      await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: '#monitoring' }),
-      });
-    } catch {
-      // ignore
-    }
-  }
+  }, []);
 
   useEffect(() => {
-    let isMounted = true;
-
-    async function loadStats() {
-      try {
-        const url = getApiUrl('/api/monitor/stats');
-        const headers = {};
-        if (adminToken) headers['Authorization'] = `Bearer ${adminToken}`;
-        const res = await fetch(url, { headers });
-        if (res.ok && isMounted) {
-          const data = await res.json();
-          setStats(data);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.warn('APM Fetch warning:', err.message);
-      }
+    if (!adminToken) {
+      return;
     }
 
-    sendPing();
-    loadStats();
+    let isMounted = true;
 
-    const intervalStats = setInterval(loadStats, 3000);
-    const intervalPing = setInterval(sendPing, 20000);
+    async function poll() {
+      if (!isMounted) return;
+      await fetchStats(adminToken);
+    }
+
+    poll();
+    const intervalStats = setInterval(poll, 3000);
 
     return () => {
       isMounted = false;
       clearInterval(intervalStats);
-      clearInterval(intervalPing);
     };
-  }, [adminToken]);
+  }, [adminToken, fetchStats]);
 
-  // Handle Admin login
   async function handleAdminAuth(e) {
     e.preventDefault();
+    if (!passwordInput.trim()) return;
+
     setAuthError('');
+    setSubmitting(true);
 
     try {
       const url = getApiUrl('/api/monitor/auth');
@@ -117,25 +109,38 @@ function Monitoring({ onBack }) {
         body: JSON.stringify({ password: passwordInput }),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         throw new Error(data.error || 'Mot de passe invalide.');
       }
 
       localStorage.setItem('apm_admin_token', data.token);
       setAdminToken(data.token);
-      setAdminModalOpen(false);
       setPasswordInput('');
-      fetchStats();
+      setCheckingAuth(true);
+      await fetchStats(data.token);
     } catch (err) {
       setAuthError(err.message);
+    } finally {
+      setSubmitting(false);
     }
   }
 
-  function handleLogout() {
+  async function handleLogout() {
+    try {
+      if (adminToken) {
+        await fetch(getApiUrl('/api/monitor/logout'), {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${adminToken}` },
+        });
+      }
+    } catch {
+      // ignore network errors on logout
+    }
     localStorage.removeItem('apm_admin_token');
     setAdminToken('');
-    fetchStats();
+    setStats(null);
+    setAuthError('');
   }
 
   async function handleResetMetrics() {
@@ -145,27 +150,98 @@ function Monitoring({ onBack }) {
 
     try {
       const url = getApiUrl('/api/monitor/reset');
-
-      await fetch(url, {
+      const res = await fetch(url, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${adminToken}`,
+          Authorization: `Bearer ${adminToken}`,
         },
       });
-      fetchStats();
+      if (res.ok) {
+        await fetchStats(adminToken);
+      }
     } catch (err) {
       alert('Erreur lors du reset : ' + err.message);
     }
   }
 
-  const liveCount = stats?.liveVisitorsCount || (loading ? 1 : 0);
+  const isAuthenticated = Boolean(adminToken && stats && stats.isAdmin);
+
+  // Strict Private Admin Gate (blocks ALL telemetry UI if not authenticated)
+  if (!isAuthenticated) {
+    return (
+      <div className={styles.monitoringContainer}>
+        <div className={styles.ambientGlow} />
+
+        <div className={styles.inner}>
+          <div className={styles.authGateWrapper}>
+            <div className={styles.authGateCard}>
+              <div className={styles.authLockIcon}>
+                <svg width="26" height="26" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+
+              <span className={styles.authBadge}>ACCÈS PRIVÉ • ADMIN UNIQUEMENT</span>
+
+              <h1 className={styles.authGateTitle}>Console APM &amp; Monitoring</h1>
+
+              {checkingAuth ? (
+                <p className={styles.authGateSubtitle}>
+                  Vérification de votre session administrateur en cours...
+                </p>
+              ) : (
+                <>
+                  <p className={styles.authGateSubtitle}>
+                    Cet espace de télémétrie et de suivi visiteurs est strictement réservé à l’administrateur du portfolio.
+                  </p>
+
+                  <form onSubmit={handleAdminAuth} className={styles.authGateForm}>
+                    {authError && <div className={styles.authErrorBox}>{authError}</div>}
+
+                    <input
+                      type="password"
+                      autoComplete="current-password"
+                      placeholder="Mot de passe administrateur"
+                      value={passwordInput}
+                      onChange={(e) => setPasswordInput(e.target.value)}
+                      className={styles.authInput}
+                      autoFocus
+                      required
+                    />
+
+                    <button
+                      type="submit"
+                      className={styles.authSubmitBtn}
+                      disabled={submitting}
+                    >
+                      {submitting ? 'Vérification...' : 'Déverrouiller le Monitoring'}
+                    </button>
+                  </form>
+                </>
+              )}
+
+              <button type="button" onClick={onBack} className={styles.authBackLink}>
+                ← Retour au Portfolio
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const liveCount = stats?.liveVisitorsCount || 0;
   const avgLat = stats?.avgLatency || 0;
   const p95Lat = stats?.p95Latency || 0;
   const totalReq = stats?.totalRequests || 0;
   const heapMb = stats?.memory?.heapUsedMb || 0;
   const heapTotalMb = stats?.memory?.heapTotalMb || 0;
   const uptimeStr = formatUptime(stats?.uptimeSeconds || 0);
-  const isAdmin = stats?.isAdmin || false;
 
   return (
     <div className={styles.monitoringContainer}>
@@ -181,25 +257,13 @@ function Monitoring({ onBack }) {
             <span>Retour au Portfolio</span>
           </button>
 
-          <div>
-            {isAdmin ? (
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <span className={`${styles.adminBtn} ${styles.adminBtnUnlocked}`}>
-                  🔓 Mode Admin Actif
-                </span>
-                <button type="button" onClick={handleLogout} className={styles.backBtn} title="Se déconnecter">
-                  Déconnexion
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setAdminModalOpen(true)}
-                className={styles.adminBtn}
-              >
-                <span>🔑 Accès Admin</span>
-              </button>
-            )}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <span className={`${styles.adminBtn} ${styles.adminBtnUnlocked}`}>
+              🔓 Espace Privé Admin
+            </span>
+            <button type="button" onClick={handleLogout} className={styles.backBtn} title="Verrouiller et se déconnecter">
+              Déconnexion
+            </button>
           </div>
         </div>
 
@@ -234,7 +298,11 @@ function Monitoring({ onBack }) {
               <span style={{ color: '#00F5D4' }}>{liveCount}</span>
             </div>
             <p className={styles.metricSubtext}>
-              {liveCount > 1 ? `${liveCount} personnes connectées` : '1 session active détectée'}
+              {liveCount > 1
+                ? `${liveCount} personnes connectées`
+                : liveCount === 1
+                  ? '1 session active détectée'
+                  : 'Aucun visiteur en direct'}
             </p>
           </div>
 
@@ -474,62 +542,20 @@ function Monitoring({ onBack }) {
           </div>
         </div>
 
-        {/* Admin Controls Banner when authenticated */}
-        {isAdmin && (
-          <div className={styles.adminControls}>
-            <div className={styles.adminStatusText}>
-              ✓ Mode Administrateur vérifié — Vous visualisez les adresses IP réelles et pouvez réinitialiser les compteurs.
-            </div>
-            <button
-              type="button"
-              onClick={handleResetMetrics}
-              className={styles.resetBtn}
-            >
-              Réinitialiser les métriques APM
-            </button>
+        {/* Admin Controls Banner */}
+        <div className={styles.adminControls}>
+          <div className={styles.adminStatusText}>
+            ✓ Accès Administrateur Privé — Les statistiques APM et IP visiteurs sont strictement protégées côté serveur (HTTP 401 sans authentification).
           </div>
-        )}
-      </div>
-
-      {/* Admin Auth Modal */}
-      {adminModalOpen && (
-        <div className={styles.modalOverlay} onClick={() => setAdminModalOpen(false)}>
-          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.modalTitle}>Accès Administrateur APM</h3>
-            <p className={styles.modalDesc}>
-              Saisissez la clé ou le mot de passe administrateur pour démasquer les adresses IP et administrer la télémétrie.
-            </p>
-
-            <form onSubmit={handleAdminAuth} className={styles.modalForm}>
-              {authError && (
-                <p style={{ color: '#f87171', fontSize: '0.8rem', margin: '0 0 6px 0' }}>
-                  {authError}
-                </p>
-              )}
-              <input
-                type="password"
-                placeholder="Mot de passe admin (ex: mbarry@admin2026)"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                className={styles.modalInput}
-                autoFocus
-              />
-              <div className={styles.modalActions}>
-                <button
-                  type="button"
-                  onClick={() => setAdminModalOpen(false)}
-                  className={styles.btnCancel}
-                >
-                  Annuler
-                </button>
-                <button type="submit" className={styles.btnSubmit}>
-                  Déverrouiller
-                </button>
-              </div>
-            </form>
-          </div>
+          <button
+            type="button"
+            onClick={handleResetMetrics}
+            className={styles.resetBtn}
+          >
+            Réinitialiser les métriques APM
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

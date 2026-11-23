@@ -14,14 +14,18 @@ function App() {
   const [currentHash, setCurrentHash] = useState(() => window.location.hash);
 
   useEffect(() => {
-    // Initial presence ping
-    sendPing(window.location.hash || '/');
+    // Initial presence ping (only for public portfolio views)
+    if (window.location.hash !== '#monitoring') {
+      sendPing(window.location.hash || '/');
+    }
 
     // Ping on hash change
     const handleHashChange = () => {
       const hash = window.location.hash;
       setCurrentHash(hash);
-      sendPing(hash || '/');
+      if (hash !== '#monitoring') {
+        sendPing(hash || '/');
+      }
     };
 
     window.addEventListener('hashchange', handleHashChange);
@@ -32,9 +36,11 @@ function App() {
       cleanupObserver = initSectionTracking();
     }
 
-    // Heartbeat every 25 seconds while active
+    // Heartbeat every 25 seconds while active on public portfolio
     const heartbeatInterval = setInterval(() => {
-      sendPing(window.location.hash || '/');
+      if (window.location.hash !== '#monitoring') {
+        sendPing(window.location.hash || '/');
+      }
     }, 25000);
 
     return () => {

@@ -22,7 +22,84 @@ const metrics = {
 // Sessions Map: sessionId -> sessionObj
 const sessions = new Map();
 const notifiedSessions = new Set();
-const adminTokens = new Set(['admin_token_master_' + crypto.randomBytes(8).toString('hex')]);
+
+// Security: HMAC-signed Admin Tokens (24h TTL) & Brute-Force Protection
+const TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
+const TOKEN_SECRET = crypto
+  .createHash('sha256')
+  .update(`apm_jwt_secret::${ADMIN_PASSWORD}`)
+  .digest('hex');
+const revokedTokens = new Set();
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOGIN_LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
+const loginAttempts = new Map(); // ip -> { count, lockedUntil }
+
+function createAdminToken() {
+  const payload = Buffer.from(
+    JSON.stringify({
+      role: 'admin',
+      exp: Date.now() + TOKEN_TTL_MS,
+      jti: crypto.randomBytes(8).toString('hex'),
+    })
+  ).toString('base64url');
+  const sig = crypto.createHmac('sha256', TOKEN_SECRET).update(payload).digest('base64url');
+  return `${payload}.${sig}`;
+}
+
+function verifyAdminToken(token) {
+  if (!token || typeof token !== 'string' || revokedTokens.has(token)) {
+    return false;
+  }
+  const parts = token.split('.');
+  if (parts.length !== 2) return false;
+  const [payload, sig] = parts;
+  const expectedSig = crypto.createHmac('sha256', TOKEN_SECRET).update(payload).digest('base64url');
+
+  const sigBuf = Buffer.from(sig);
+  const expectedBuf = Buffer.from(expectedSig);
+  if (sigBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(sigBuf, expectedBuf)) {
+    return false;
+  }
+
+  try {
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return decoded.role === 'admin' && typeof decoded.exp === 'number' && decoded.exp > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+function verifyPassword(input = '') {
+  const inputHash = crypto.createHash('sha256').update(String(input).trim()).digest();
+  const expectedHash = crypto.createHash('sha256').update(ADMIN_PASSWORD.trim()).digest();
+  return crypto.timingSafeEqual(inputHash, expectedHash);
+}
+
+async function sendDiscordSecurityAlert(ip, attempts) {
+  if (!DISCORD_WEBHOOK_URL) return;
+  try {
+    const embed = {
+      title: '🚨 Alerte Sécurité : Tentatives d’accès Admin bloquées',
+      description: `Plusieurs tentatives de connexion échouées sur la console de Monitoring privée.`,
+      color: 0xEF4444, // Red
+      fields: [
+        { name: '🌐 IP Source', value: ip, inline: true },
+        { name: '🔁 Tentatives', value: `${attempts} échecs`, inline: true },
+        { name: '🔒 Action', value: 'IP bloquée pour 15 minutes (HTTP 429)', inline: false },
+      ],
+      footer: { text: 'Portfolio Mouhamet Barry — Protection Anti-Brute-Force' },
+      timestamp: new Date().toISOString(),
+    };
+
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] }),
+    });
+  } catch (err) {
+    console.error('Erreur webhook Discord Security :', err.message);
+  }
+}
 
 // Date & Time formatting helpers (French 24h format)
 function formatDateTime(ms) {
@@ -487,14 +564,18 @@ export async function handleApmApi(req, res) {
     return res.end();
   }
 
-  // Verify Admin Auth
+  // Verify Admin Auth (HMAC-signed token with 24h TTL)
   const authHeader = req.headers['authorization'] || '';
   const adminKey = req.headers['x-admin-key'] || '';
   const token = authHeader.replace(/^Bearer\s+/, '') || adminKey;
-  const isAdmin = adminTokens.has(token);
+  const isAdmin = verifyAdminToken(token);
 
   if (url.endsWith('/stats') || url.includes('/monitor/stats')) {
-    const stats = getApmStats(isAdmin);
+    if (!isAdmin) {
+      res.statusCode = 401;
+      return res.end(JSON.stringify({ error: 'Accès strictement réservé à l’administrateur.' }));
+    }
+    const stats = getApmStats(true);
     res.statusCode = 200;
     return res.end(JSON.stringify(stats));
   }
@@ -503,10 +584,11 @@ export async function handleApmApi(req, res) {
     const parsed = await parseRequestBody(req);
     const path = parsed?.path || '/';
 
-    touchVisitorSession(req, path);
-    const stats = getApmStats(isAdmin);
+    if (path !== '#monitoring') {
+      touchVisitorSession(req, path);
+    }
     res.statusCode = 200;
-    return res.end(JSON.stringify({ success: true, liveVisitorsCount: stats.liveVisitorsCount }));
+    return res.end(JSON.stringify({ success: true }));
   }
 
   if (url.endsWith('/event') || url.includes('/monitor/event')) {
@@ -521,23 +603,63 @@ export async function handleApmApi(req, res) {
   }
 
   if (url.endsWith('/auth') || url.includes('/monitor/auth')) {
+    const clientIp = getClientIp(req);
+    const now = Date.now();
+    const record = loginAttempts.get(clientIp);
+
+    if (record && record.lockedUntil > now) {
+      const remainingMin = Math.ceil((record.lockedUntil - now) / 60000);
+      res.statusCode = 429;
+      return res.end(
+        JSON.stringify({
+          error: `Trop de tentatives échouées. Accès temporairement bloqué (${remainingMin} min).`,
+        })
+      );
+    }
+
     const parsed = await parseRequestBody(req);
     const password = parsed?.password;
 
-    if (password && password.trim() === ADMIN_PASSWORD.trim()) {
-      const newToken = 'admin_' + crypto.randomBytes(16).toString('hex');
-      adminTokens.add(newToken);
+    if (password && verifyPassword(password)) {
+      loginAttempts.delete(clientIp);
+      const newToken = createAdminToken();
       res.statusCode = 200;
       return res.end(JSON.stringify({ success: true, token: newToken }));
     }
+
+    const nextCount = (record?.count || 0) + 1;
+    if (nextCount >= MAX_LOGIN_ATTEMPTS) {
+      loginAttempts.set(clientIp, { count: nextCount, lockedUntil: now + LOGIN_LOCKOUT_MS });
+      sendDiscordSecurityAlert(clientIp, nextCount);
+      res.statusCode = 429;
+      return res.end(
+        JSON.stringify({
+          error: 'Trop de tentatives échouées. Votre IP est bloquée pour 15 minutes.',
+        })
+      );
+    }
+
+    loginAttempts.set(clientIp, { count: nextCount, lockedUntil: 0 });
     res.statusCode = 401;
-    return res.end(JSON.stringify({ error: 'Mot de passe administrateur incorrect.' }));
+    return res.end(
+      JSON.stringify({
+        error: `Mot de passe administrateur incorrect (${MAX_LOGIN_ATTEMPTS - nextCount} essai${MAX_LOGIN_ATTEMPTS - nextCount > 1 ? 's' : ''} restant${MAX_LOGIN_ATTEMPTS - nextCount > 1 ? 's' : ''}).`,
+      })
+    );
+  }
+
+  if (url.endsWith('/logout') || url.includes('/monitor/logout')) {
+    if (token) {
+      revokedTokens.add(token);
+    }
+    res.statusCode = 200;
+    return res.end(JSON.stringify({ success: true }));
   }
 
   if (url.endsWith('/reset') || url.includes('/monitor/reset')) {
     if (!isAdmin) {
       res.statusCode = 403;
-      return res.end(JSON.stringify({ error: 'Accès réservé aux administrateurs.' }));
+      return res.end(JSON.stringify({ error: 'Accès réservé à l’administrateur.' }));
     }
     metrics.latencies = [];
     metrics.recentRequests = [];

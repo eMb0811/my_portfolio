@@ -7,7 +7,6 @@ const links = [
   { href: '#skills', label: 'Compétences' },
   { href: '#projects', label: 'Projets' },
   { href: '#contact', label: 'Contact' },
-  { href: '#monitoring', label: 'Observabilité Live', isLive: true },
 ];
 
 function Navbar() {
