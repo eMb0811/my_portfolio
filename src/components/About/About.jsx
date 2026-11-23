@@ -2,6 +2,7 @@ import styles from './About.module.css';
 import useReveal from '../../hooks/useReveal.js';
 import photoMb from '../../assets/photo_mb.jpg';
 import { GitHubIcon, LinkedInIcon } from '../common/Icons.jsx';
+import { trackCvDownload, trackContactClick } from '../../utils/telemetry.js';
 
 const parcours = [
   {
@@ -99,6 +100,7 @@ function About() {
                 rel="noopener noreferrer"
                 className={styles.profileSocialBtn}
                 title="Profil GitHub"
+                onClick={() => trackContactClick('About GitHub')}
               >
                 <GitHubIcon size={17} />
                 <span>GitHub</span>
@@ -109,6 +111,7 @@ function About() {
                 rel="noopener noreferrer"
                 className={styles.profileSocialBtn}
                 title="Profil LinkedIn"
+                onClick={() => trackContactClick('About LinkedIn')}
               >
                 <LinkedInIcon size={17} />
                 <span>LinkedIn</span>
@@ -179,13 +182,18 @@ function About() {
               download="CV_Mouhamet_Barry.pdf"
               className={styles.btnPrimary}
               title="Télécharger mon CV (PDF)"
+              onClick={() => trackCvDownload('About')}
             >
               <svg style={{ width: '18px', height: '18px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               <span>Télécharger mon CV (PDF)</span>
             </a>
-            <a href="#contact" className={styles.btnSecondary}>
+            <a
+              href="#contact"
+              className={styles.btnSecondary}
+              onClick={() => trackContactClick('About Bouton Contact')}
+            >
               Me contacter
             </a>
           </div>

@@ -8,36 +8,40 @@ import Contact from './components/Contact/Contact.jsx';
 import Footer from './components/Footer/Footer.jsx';
 import BackToTop from './components/BackToTop/BackToTop.jsx';
 import Monitoring from './components/Monitoring/Monitoring.jsx';
+import { sendPing, initSectionTracking } from './utils/telemetry.js';
 
 function App() {
   const [currentHash, setCurrentHash] = useState(() => window.location.hash);
 
   useEffect(() => {
-    // Ping APM when hash or page changes
-    const reportPresence = () => {
-      setCurrentHash(window.location.hash);
-      try {
-        let pingUrl = '/api/monitor/ping';
-        if (typeof window !== 'undefined' && window.location.hostname.includes('github.io')) {
-          pingUrl = 'https://mbarry.is-a.dev/api/monitor/ping';
-        } else {
-          const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-          pingUrl = baseUrl ? `${baseUrl}/api/monitor/ping` : '/api/monitor/ping';
-        }
+    // Initial presence ping
+    sendPing(window.location.hash || '/');
 
-        fetch(pingUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ path: window.location.hash || '/' }),
-        }).catch(() => {});
-      } catch {
-        // ignore
-      }
+    // Ping on hash change
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      setCurrentHash(hash);
+      sendPing(hash || '/');
     };
 
-    reportPresence();
-    window.addEventListener('hashchange', reportPresence);
-    return () => window.removeEventListener('hashchange', reportPresence);
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Automatic section tracking when scrolling
+    let cleanupObserver = () => {};
+    if (window.location.hash !== '#monitoring') {
+      cleanupObserver = initSectionTracking();
+    }
+
+    // Heartbeat every 25 seconds while active
+    const heartbeatInterval = setInterval(() => {
+      sendPing(window.location.hash || '/');
+    }, 25000);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      cleanupObserver();
+      clearInterval(heartbeatInterval);
+    };
   }, []);
 
   if (currentHash === '#monitoring') {

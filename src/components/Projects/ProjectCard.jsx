@@ -1,5 +1,6 @@
 import styles from './ProjectCard.module.css';
 import { GitHubIcon } from '../common/Icons.jsx';
+import { trackProjectClick } from '../../utils/telemetry.js';
 
 function getProjectIcon(id, categorie) {
   switch (id) {
@@ -112,6 +113,7 @@ function ProjectCard({
             rel="noopener noreferrer"
             className={styles.actionBtn}
             title="Consulter le code source et la documentation sur GitHub"
+            onClick={() => trackProjectClick(titre, 'GitHub', githubUrl)}
           >
             <GitHubIcon size={16} />
             <span>Code &amp; Doc GitHub</span>
@@ -124,6 +126,7 @@ function ProjectCard({
               rel="noopener noreferrer"
               className={`${styles.actionBtn} ${styles.actionBtnLive}`}
               title="Ouvrir la démonstration en ligne"
+              onClick={() => trackProjectClick(titre, 'Démo Live', liveUrl)}
             >
               <svg className={styles.liveIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

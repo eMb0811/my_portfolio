@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styles from './Contact.module.css';
 import useReveal from '../../hooks/useReveal.js';
 import { GitHubIcon, LinkedInIcon } from '../common/Icons.jsx';
+import { trackContactClick, trackEvent } from '../../utils/telemetry.js';
 
 function Contact() {
   const [nom, setNom] = useState('');
@@ -35,6 +36,7 @@ function Contact() {
       }
 
       setStatus('success');
+      trackEvent('CONTACT_FORM_SUBMIT', `Message envoyé par ${nom}`, { nom, email });
       setNom('');
       setEmail('');
       setMessage('');
@@ -65,7 +67,11 @@ function Contact() {
           </h2>
           <p className={styles.subtitle}>
             Recherche active d'une opportunité en stage de fin d'études ou alternance. N'hésitez pas à me laisser un message ou à m'écrire directement à{' '}
-            <a href="mailto:elhadjibarry2001@gmail.com" className={styles.emailLink}>
+            <a
+              href="mailto:elhadjibarry2001@gmail.com"
+              className={styles.emailLink}
+              onClick={() => trackContactClick('Email direct')}
+            >
               elhadjibarry2001@gmail.com
             </a>.
           </p>
@@ -76,6 +82,7 @@ function Contact() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialPill}
+              onClick={() => trackContactClick('Contact GitHub')}
             >
               <GitHubIcon size={17} />
               <span>GitHub</span>
@@ -85,6 +92,7 @@ function Contact() {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.socialPill}
+              onClick={() => trackContactClick('Contact LinkedIn')}
             >
               <LinkedInIcon size={17} />
               <span>LinkedIn</span>

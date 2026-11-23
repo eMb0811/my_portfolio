@@ -27,6 +27,16 @@ function Monitoring({ onBack }) {
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
   const [adminToken, setAdminToken] = useState(() => localStorage.getItem('apm_admin_token') || '');
+  const [expandedSessions, setExpandedSessions] = useState(() => new Set());
+
+  const toggleExpand = (id) => {
+    setExpandedSessions((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   // Fetch telemetry data from server APM
   async function fetchStats() {
@@ -288,36 +298,129 @@ function Monitoring({ onBack }) {
               {(!stats?.recentSessions || stats.recentSessions.length === 0) ? (
                 <p style={{ color: '#64748b', fontSize: '0.85rem' }}>En attente de session...</p>
               ) : (
-                stats.recentSessions.map((s) => (
-                  <div
-                    key={s.id}
-                    className={`${styles.visitorItem} ${s.isOnline ? styles.visitorItemLive : ''}`}
-                  >
-                    <div className={styles.visitorTop}>
-                      <div className={`${styles.visitorStatus} ${s.isOnline ? styles.visitorOnline : styles.visitorRecent}`}>
-                        <span>{s.isOnline ? '🟢 En direct' : '○ Récemment actif'}</span>
+                stats.recentSessions.map((s) => {
+                  const isExpanded = expandedSessions.has(s.id);
+
+                  return (
+                    <div
+                      key={s.id}
+                      className={`${styles.visitorItem} ${s.isOnline ? styles.visitorItemLive : ''}`}
+                    >
+                      {/* Top Header */}
+                      <div className={styles.visitorTop}>
+                        <div className={`${styles.visitorStatus} ${s.isOnline ? styles.visitorOnline : styles.visitorRecent}`}>
+                          <span>{s.isOnline ? '🟢 En direct' : '○ Récemment actif'}</span>
+                        </div>
+                        <span className={styles.visitorIp}>{s.ip}</span>
                       </div>
-                      <span className={styles.visitorIp}>{s.ip}</span>
-                    </div>
 
-                    <div className={styles.visitorMeta}>
-                      <span className={styles.metaPill}>
-                        🌍 {s.country}
-                      </span>
-                      <span className={styles.metaPill}>
-                        💻 {s.device} • {s.browser} ({s.os})
-                      </span>
-                      <span className={styles.metaPill}>
-                        👁️ {s.pageViews} requêtes
-                      </span>
-                    </div>
+                      {/* Action Badges (CV, Projects, Contact) */}
+                      {s.actions && s.actions.length > 0 && (
+                        <div className={styles.actionBadgesRow}>
+                          {s.actions.includes('CV_DOWNLOAD') && (
+                            <span className={`${styles.actionBadge} ${styles.actionBadgeCv}`}>
+                              📄 CV Téléchargé
+                            </span>
+                          )}
+                          {s.actions.includes('PROJECT_CLICK') && (
+                            <span className={`${styles.actionBadge} ${styles.actionBadgeProject}`}>
+                              🚀 Projet Exploré
+                            </span>
+                          )}
+                          {s.actions.includes('CONTACT_CLICK') && (
+                            <span className={`${styles.actionBadge} ${styles.actionBadgeContact}`}>
+                              📬 Contact Cliqué
+                            </span>
+                          )}
+                          {s.actions.includes('CONTACT_FORM_SUBMIT') && (
+                            <span className={`${styles.actionBadge} ${styles.actionBadgeCv}`}>
+                              ✉️ Formulaire Envoyé
+                            </span>
+                          )}
+                        </div>
+                      )}
 
-                    <div className={styles.visitorPath}>
-                      <span>Section active :</span>
-                      <strong>{s.currentPath || '/'}</strong>
+                      {/* Exact Arrival Date & Time + Duration */}
+                      <div className={styles.visitorArrivalRow}>
+                        <span className={styles.arrivalDate}>
+                          🕒 Arrivé le : <strong>{s.firstSeenFormatted || (s.firstSeen ? new Date(s.firstSeen).toLocaleString('fr-FR') : 'N/A')}</strong>
+                        </span>
+                        <span className={styles.arrivalDuration}>
+                          {s.isOnline ? '⏱️ Session en direct' : `⏱️ Durée : ${formatUptime(s.durationSeconds || 0)}`}
+                        </span>
+                      </div>
+
+                      {/* Visitor Device & Location Meta */}
+                      <div className={styles.visitorMeta}>
+                        <span className={styles.metaPill}>
+                          🌍 {s.country}
+                        </span>
+                        <span className={styles.metaPill}>
+                          💻 {s.device} • {s.browser} ({s.os})
+                        </span>
+                        <span className={styles.metaPill}>
+                          👁️ {s.pageViews} requêtes
+                        </span>
+                      </div>
+
+                      {/* Active Section */}
+                      <div className={styles.visitorPath}>
+                        <span>Section active :</span>
+                        <strong>{s.currentPath || '/'}</strong>
+                      </div>
+
+                      {/* Collapsible Visitor Journey Timeline */}
+                      {s.timeline && s.timeline.length > 0 && (
+                        <>
+                          <button
+                            type="button"
+                            className={styles.timelineToggleBtn}
+                            onClick={() => toggleExpand(s.id)}
+                            title="Afficher ou masquer la chronologie des sections et actions"
+                          >
+                            <span>🧭 Parcours du visiteur ({s.timeline.length} étape{s.timeline.length > 1 ? 's' : ''})</span>
+                            <span>{isExpanded ? '▲ Masquer' : '▼ Dérouler'}</span>
+                          </button>
+
+                          {isExpanded && (
+                            <div className={styles.timelineWrapper}>
+                              <div className={styles.timelineHeader}>Historique de navigation</div>
+                              <div className={styles.timelineList}>
+                                {s.timeline.map((step, idx) => {
+                                  let dotClass = styles.timelineDot;
+                                  if (step.type === 'action') {
+                                    if (step.actionType === 'CV_DOWNLOAD') dotClass = `${styles.timelineDot} ${styles.timelineDotCv}`;
+                                    else if (step.actionType === 'PROJECT_CLICK') dotClass = `${styles.timelineDot} ${styles.timelineDotProject}`;
+                                    else if (step.actionType === 'CONTACT_CLICK') dotClass = `${styles.timelineDot} ${styles.timelineDotContact}`;
+                                  } else if (step.type === 'section') {
+                                    dotClass = `${styles.timelineDot} ${styles.timelineDotSection}`;
+                                  }
+
+                                  return (
+                                    <div key={step.id || `${step.time}-${idx}`} className={styles.timelineStep}>
+                                      <div className={dotClass} />
+                                      <div className={styles.timelineStepContent}>
+                                        <div className={styles.timelineStepHeader}>
+                                          <span className={styles.timelineStepName}>{step.name}</span>
+                                          <span className={styles.timelineStepTime}>{step.time}</span>
+                                        </div>
+                                        {step.details?.url && (
+                                          <span className={styles.timelineStepDetails}>
+                                            Lien : {step.details.url}
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>

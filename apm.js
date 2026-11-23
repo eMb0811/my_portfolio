@@ -9,6 +9,7 @@ const startTime = Date.now();
 const MAX_LATENCIES = 120;
 const MAX_RECENT_REQUESTS = 50;
 const SESSION_TIMEOUT_MS = 3 * 60 * 1000; // 3 minutes timeout for live sessions
+const EVENT_ALERT_DEBOUNCE_MS = 10 * 1000; // 10s cooldown per event type to prevent webhook spam
 
 const metrics = {
   totalRequests: 0,
@@ -22,6 +23,26 @@ const metrics = {
 const sessions = new Map();
 const notifiedSessions = new Set();
 const adminTokens = new Set(['admin_token_master_' + crypto.randomBytes(8).toString('hex')]);
+
+// Date & Time formatting helpers (French 24h format)
+function formatDateTime(ms) {
+  const d = new Date(ms);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const seconds = String(d.getSeconds()).padStart(2, '0');
+  return `${day}/${month}/${year} à ${hours}:${minutes}:${seconds}`;
+}
+
+function formatTime(ms) {
+  const d = new Date(ms);
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  const seconds = String(d.getSeconds()).padStart(2, '0');
+  return `${hours}:${minutes}:${seconds}`;
+}
 
 // Parse User-Agent
 function parseUserAgent(ua = '') {
@@ -51,7 +72,6 @@ function parseUserAgent(ua = '') {
 // Anonymize IP address for privacy & RGPD compliance
 function maskIp(ip = '') {
   if (!ip) return '127.0.0.1';
-  // Strip IPv6 prefix if present
   const cleanIp = ip.replace(/^::ffff:/, '');
   if (cleanIp.includes('.')) {
     const parts = cleanIp.split('.');
@@ -79,19 +99,20 @@ function getSessionId(req) {
   return 'sess_' + crypto.createHash('sha256').update(`${ip}-${ua}-${day}`).digest('hex').slice(0, 12);
 }
 
-// Send instant notification to Discord Webhook
+// Send instant notification to Discord Webhook on new session
 async function sendDiscordNotification(session, currentPath) {
   if (!DISCORD_WEBHOOK_URL) return;
 
   try {
     const embed = {
-      title: '🎯 Visiteur en direct sur le Portfolio !',
-      description: `Un utilisateur consulte actuellement **${currentPath || '/'}**.`,
+      title: '🎯 Nouveau Visiteur sur le Portfolio !',
+      description: `Un utilisateur navigue actuellement sur le site.`,
       color: 0x00F5D4, // Neon Cyan
       fields: [
+        { name: '📅 Date & Heure exacte', value: session.firstSeenFormatted, inline: false },
         { name: '💻 Appareil', value: `${session.device} • ${session.browser} (${session.os})`, inline: true },
         { name: '🌍 Pays / IP', value: `${session.country} (${session.maskedIp})`, inline: true },
-        { name: '⏱️ Session', value: `Début : ${new Date(session.firstSeen).toLocaleTimeString('fr-FR')}`, inline: true },
+        { name: '🧭 Entrée', value: currentPath || 'Accueil (/)', inline: true },
         { name: '📊 Dashboard APM', value: `[Ouvrir l'Observabilité](https://mbarry.is-a.dev/#monitoring)`, inline: false },
       ],
       footer: { text: 'Portfolio Mouhamet Barry — APM & Observabilité Live' },
@@ -105,6 +126,71 @@ async function sendDiscordNotification(session, currentPath) {
     });
   } catch (err) {
     console.error('Erreur webhook Discord APM :', err.message);
+  }
+}
+
+// Send instant notification to Discord Webhook for key actions (CV download, project click, etc.)
+async function sendDiscordEventNotification(session, event, label, details) {
+  if (!DISCORD_WEBHOOK_URL) return;
+
+  try {
+    let title = '⚡ Interaction Détectée sur le Portfolio';
+    let color = 0x00F5D4;
+    let description = `Un visiteur a interagi : **${label || event}**`;
+
+    if (event === 'CV_DOWNLOAD') {
+      title = '📄 Téléchargement de CV Détecté !';
+      color = 0x10B981; // Emerald Green
+      description = `🎯 Un visiteur vient de télécharger votre **CV au format PDF** !`;
+    } else if (event === 'PROJECT_CLICK') {
+      title = `🚀 Consultation de Projet : ${label || 'Projet'}`;
+      color = 0x3B82F6; // Blue
+      description = `Un visiteur s'intéresse à l'un de vos projets et consulte son lien externe ou GitHub.`;
+    } else if (event === 'CONTACT_CLICK') {
+      title = `📬 Intérêt Contact : ${label || 'Contact'}`;
+      color = 0xA855F7; // Purple
+      description = `Un visiteur a cliqué sur un moyen de contact direct.`;
+    }
+
+    // Trace past sections viewed
+    const sectionsSummary = (session.timeline || [])
+      .filter((t) => t.type === 'section' || t.type === 'page')
+      .slice(-4)
+      .map((t) => t.name)
+      .join(' ➔ ') || session.currentPath || 'Accueil';
+
+    const fields = [
+      { name: '👤 Visiteur', value: `${session.device} • ${session.browser} (${session.os})`, inline: true },
+      { name: '🌍 Pays / IP', value: `${session.country} (${session.maskedIp})`, inline: true },
+      { name: '🕒 Heure d’arrivée', value: session.firstSeenTime || formatTime(session.firstSeen), inline: true },
+    ];
+
+    if (details?.url) {
+      fields.push({ name: '🔗 Lien', value: details.url, inline: true });
+    }
+    if (details?.source) {
+      fields.push({ name: '📍 Source', value: details.source, inline: true });
+    }
+
+    fields.push({ name: '🧭 Parcours avant action', value: sectionsSummary, inline: false });
+    fields.push({ name: '📊 Dashboard APM', value: `[Accéder au Monitoring Live](https://mbarry.is-a.dev/#monitoring)`, inline: false });
+
+    const embed = {
+      title,
+      description,
+      color,
+      fields,
+      footer: { text: 'Portfolio Mouhamet Barry — Alertes Événements APM' },
+      timestamp: new Date().toISOString(),
+    };
+
+    await fetch(DISCORD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] }),
+    });
+  } catch (err) {
+    console.error('Erreur webhook Discord Event :', err.message);
   }
 }
 
@@ -133,9 +219,24 @@ function touchVisitorSession(req, explicitPath = null) {
       os,
       browser,
       firstSeen: now,
+      firstSeenFormatted: formatDateTime(now),
+      firstSeenTime: formatTime(now),
       lastSeen: now,
+      lastSeenFormatted: formatDateTime(now),
+      lastSeenTime: formatTime(now),
       pageViews: 1,
       currentPath: path,
+      timeline: [
+        {
+          id: crypto.randomBytes(3).toString('hex'),
+          type: 'page',
+          name: path.startsWith('#') ? `Section ${path}` : `Entrée (${path})`,
+          time: formatTime(now),
+          timestamp: now,
+        },
+      ],
+      actions: [],
+      lastAlertedEvents: {},
     };
     sessions.set(sessionId, session);
 
@@ -146,10 +247,67 @@ function touchVisitorSession(req, explicitPath = null) {
     }
   } else {
     session.lastSeen = now;
+    session.lastSeenFormatted = formatDateTime(now);
+    session.lastSeenTime = formatTime(now);
+
     if (!isAsset) {
       session.pageViews += 1;
-      session.currentPath = path;
+
+      // Track section change in timeline if path changed
+      if (explicitPath && session.currentPath !== explicitPath) {
+        session.currentPath = explicitPath;
+        const sectionName = explicitPath.startsWith('#') ? `Section ${explicitPath}` : `Page ${explicitPath}`;
+
+        session.timeline.push({
+          id: crypto.randomBytes(3).toString('hex'),
+          type: 'section',
+          name: sectionName,
+          time: formatTime(now),
+          timestamp: now,
+        });
+
+        // Limit timeline size to 35 entries
+        if (session.timeline.length > 35) {
+          session.timeline.shift();
+        }
+      }
     }
+  }
+
+  return session;
+}
+
+// Track special interaction events (CV download, project clicks, contact clicks)
+function trackVisitorEvent(req, { event, label, details }) {
+  const session = touchVisitorSession(req);
+  const now = Date.now();
+
+  if (!session.actions.includes(event)) {
+    session.actions.push(event);
+  }
+
+  // Add event to session timeline
+  session.timeline.push({
+    id: crypto.randomBytes(3).toString('hex'),
+    type: 'action',
+    actionType: event,
+    name: label || event,
+    time: formatTime(now),
+    timestamp: now,
+    details: details || null,
+  });
+
+  if (session.timeline.length > 35) {
+    session.timeline.shift();
+  }
+
+  // Check debounce to avoid spamming Discord
+  session.lastAlertedEvents = session.lastAlertedEvents || {};
+  const lastAlertTime = session.lastAlertedEvents[event] || 0;
+
+  if (now - lastAlertTime > EVENT_ALERT_DEBOUNCE_MS) {
+    session.lastAlertedEvents[event] = now;
+    sendDiscordEventNotification(session, event, label, details);
   }
 
   return session;
@@ -193,7 +351,7 @@ export function apmMiddleware(req, res, next) {
     // Recent requests
     metrics.recentRequests.unshift({
       id: crypto.randomBytes(4).toString('hex'),
-      time: new Date().toLocaleTimeString('fr-FR'),
+      time: formatTime(Date.now()),
       method: req.method,
       url: routeKey,
       status,
@@ -217,6 +375,8 @@ export function getApmStats(isAdmin = false) {
 
   for (const session of sessions.values()) {
     const isOnline = now - session.lastSeen < SESSION_TIMEOUT_MS;
+    const durationSeconds = Math.round((session.lastSeen - session.firstSeen) / 1000);
+
     const sessionData = {
       id: session.id,
       ip: isAdmin ? session.rawIp : session.maskedIp,
@@ -225,9 +385,16 @@ export function getApmStats(isAdmin = false) {
       os: session.os,
       browser: session.browser,
       firstSeen: session.firstSeen,
+      firstSeenFormatted: session.firstSeenFormatted || formatDateTime(session.firstSeen),
+      firstSeenTime: session.firstSeenTime || formatTime(session.firstSeen),
       lastSeen: session.lastSeen,
+      lastSeenFormatted: session.lastSeenFormatted || formatDateTime(session.lastSeen),
+      lastSeenTime: session.lastSeenTime || formatTime(session.lastSeen),
+      durationSeconds,
       pageViews: session.pageViews,
       currentPath: session.currentPath,
+      timeline: session.timeline || [],
+      actions: session.actions || [],
       isOnline,
     };
 
@@ -235,14 +402,14 @@ export function getApmStats(isAdmin = false) {
     allSessions.push(sessionData);
   }
 
-  // Sort sessions: active first, then most recent
+  // Sort sessions: active first, then most recent lastSeen
   allSessions.sort((a, b) => b.lastSeen - a.lastSeen);
 
   // Compute Latency stats
   const latencies = metrics.latencies;
   const count = latencies.length;
   const avgLatency = count > 0 ? Math.round((latencies.reduce((a, b) => a + b, 0) / count) * 10) / 10 : 0;
-  
+
   let p95Latency = 0;
   if (count > 0) {
     const sorted = [...latencies].sort((a, b) => a - b);
@@ -265,8 +432,8 @@ export function getApmStats(isAdmin = false) {
     },
     liveVisitorsCount: activeSessions.length,
     activeSessions,
-    recentSessions: allSessions.slice(0, 10),
-    recentRequests: metrics.recentRequests.slice(0, 15).map(r => ({
+    recentSessions: allSessions.slice(0, 15),
+    recentRequests: metrics.recentRequests.slice(0, 15).map((r) => ({
       ...r,
       ip: isAdmin ? r.ip : maskIp(r.ip),
     })),
@@ -291,7 +458,9 @@ async function parseRequestBody(req) {
   }
   return new Promise((resolve) => {
     let body = '';
-    req.on('data', chunk => { body += chunk; });
+    req.on('data', (chunk) => {
+      body += chunk;
+    });
     req.on('end', () => {
       try {
         resolve(JSON.parse(body || '{}'));
@@ -338,6 +507,17 @@ export async function handleApmApi(req, res) {
     const stats = getApmStats(isAdmin);
     res.statusCode = 200;
     return res.end(JSON.stringify({ success: true, liveVisitorsCount: stats.liveVisitorsCount }));
+  }
+
+  if (url.endsWith('/event') || url.includes('/monitor/event')) {
+    const parsed = await parseRequestBody(req);
+    const { event, label, details } = parsed || {};
+
+    if (event) {
+      trackVisitorEvent(req, { event, label, details });
+    }
+    res.statusCode = 200;
+    return res.end(JSON.stringify({ success: true }));
   }
 
   if (url.endsWith('/auth') || url.includes('/monitor/auth')) {
