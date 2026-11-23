@@ -1,139 +1,126 @@
 import styles from './ProjectCard.module.css';
 import { GitHubIcon } from '../common/Icons.jsx';
 import { trackProjectClick } from '../../utils/telemetry.js';
+import { handleSpotlightMove } from '../../utils/spotlight.js';
+import { getProjectIcon } from './projectIcons.jsx';
 
-function getProjectIcon(id, categorie) {
-  switch (id) {
-    case 'supervision-securite-remediation-proxmox':
-    case 'architecture-noc-soc-360-lab':
-    case 'siem-wazuh-rsyslog':
-      return (
-        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      );
-    case 'projet_cotisation_java':
-    case 'my_portfolio':
-    case 'meteo-app':
-      return (
-        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
-        </svg>
-      );
-    case 'reseau-multi-vlan-proxmox':
-    case 'dns-hierarchique-proxmox-bind9':
-    case 'infrastructure-hebergement-ispconfig':
-      return (
-        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-        </svg>
-      );
-    case 'eduflow':
-      return (
-        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-        </svg>
-      );
-    case 'senevent':
-      return (
-        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-      );
-    default:
-      if (categorie && categorie.includes('Sécurité')) {
-        return (
-          <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
-        );
-      }
-      return (
-        <svg className={styles.iconSvg} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      );
-  }
-}
+const MAX_VISIBLE_TAGS = 4;
 
 function ProjectCard({
-  id,
-  titre,
-  categorie,
-  badgeContexte,
-  description,
-  highlights = [],
-  tags = [],
-  githubUrl = 'https://github.com/eMb0811',
-  liveUrl,
+  project,
+  index = 0,
+  isVisible = true,
+  onSelect,
 }) {
+  const {
+    id,
+    titre,
+    categorie,
+    badgeContexte,
+    description,
+    tags = [],
+    githubUrl = 'https://github.com/eMb0811',
+    liveUrl,
+  } = project;
+
+  const visibleTags = tags.slice(0, MAX_VISIBLE_TAGS);
+  const remainingTagsCount = Math.max(tags.length - MAX_VISIBLE_TAGS, 0);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelect(project);
+    }
+  };
+
   return (
-    <article className={styles.card}>
+    <article
+      role="button"
+      tabIndex={0}
+      aria-label={`Ouvrir les détails techniques de ${titre}`}
+      className={`${styles.card} spotlightCard ${isVisible ? 'filterEnter' : ''}`}
+      style={{ '--enter-delay': `${Math.min(index * 45, 270)}ms` }}
+      onClick={() => onSelect(project)}
+      onKeyDown={handleKeyDown}
+      onMouseMove={handleSpotlightMove}
+    >
       <div className={styles.cardTop}>
         <div className={styles.headerRow}>
           <div className={styles.iconAndBadge}>
             <span className={styles.iconBox}>
-              {getProjectIcon(id, categorie)}
+              {getProjectIcon(id, categorie, styles.iconSvg)}
             </span>
             {badgeContexte && (
               <span className={styles.contextBadge}>{badgeContexte}</span>
             )}
           </div>
-          {categorie && (
-            <span className={styles.domainPill}>{categorie}</span>
+          {liveUrl && (
+            <span className={styles.liveDotBadge} title="Démo en ligne disponible">
+              <span className={styles.liveDot} aria-hidden="true" />
+              Live
+            </span>
           )}
         </div>
 
         <h3 className={styles.titre}>{titre}</h3>
         <p className={styles.description}>{description}</p>
-
-        {highlights && highlights.length > 0 && (
-          <ul className={styles.highlightsList}>
-            {highlights.map((item, idx) => (
-              <li key={idx} className={styles.highlightItem}>
-                <span className={styles.highlightBullet} aria-hidden="true">▹</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
 
       <div className={styles.cardBottom}>
         <div className={styles.tagsContainer}>
-          {tags.map((tag) => (
+          {visibleTags.map((tag) => (
             <span key={tag} className={styles.tag}>{tag}</span>
           ))}
+          {remainingTagsCount > 0 && (
+            <span className={styles.tagMore} title={`${remainingTagsCount} technologies supplémentaires dans la fiche`}>
+              +{remainingTagsCount}
+            </span>
+          )}
         </div>
 
-        <div className={styles.cardActions}>
-          <a
-            href={githubUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.actionBtn}
-            title="Consulter le code source et la documentation sur GitHub"
-            onClick={() => trackProjectClick(titre, 'GitHub', githubUrl)}
-          >
-            <GitHubIcon size={16} />
-            <span>Code &amp; Doc GitHub</span>
-          </a>
+        <div className={styles.cardFooter}>
+          <span className={styles.detailsPrompt}>
+            <span>Détails techniques</span>
+            <svg className={styles.arrowIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </span>
 
-          {liveUrl && (
+          <div className={styles.quickLinks}>
             <a
-              href={liveUrl}
+              href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${styles.actionBtn} ${styles.actionBtnLive}`}
-              title="Ouvrir la démonstration en ligne"
-              onClick={() => trackProjectClick(titre, 'Démo Live', liveUrl)}
+              className={styles.quickIconBtn}
+              title="Code & Doc GitHub"
+              aria-label={`Ouvrir ${titre} sur GitHub`}
+              onClick={(e) => {
+                e.stopPropagation();
+                trackProjectClick(titre, 'GitHub', githubUrl);
+              }}
             >
-              <svg className={styles.liveIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-              <span>Démo Live</span>
+              <GitHubIcon size={15} />
             </a>
-          )}
+
+            {liveUrl && (
+              <a
+                href={liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${styles.quickIconBtn} ${styles.quickIconBtnLive}`}
+                title="Ouvrir la démo live"
+                aria-label={`Ouvrir la démo live de ${titre}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  trackProjectClick(titre, 'Démo Live', liveUrl);
+                }}
+              >
+                <svg className={styles.liveIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </article>

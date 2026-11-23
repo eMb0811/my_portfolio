@@ -3,6 +3,7 @@ import styles from './Contact.module.css';
 import useReveal from '../../hooks/useReveal.js';
 import { GitHubIcon, LinkedInIcon } from '../common/Icons.jsx';
 import { trackContactClick, trackEvent } from '../../utils/telemetry.js';
+import { handleSpotlightMove } from '../../utils/spotlight.js';
 
 function Contact() {
   const [nom, setNom] = useState('');
@@ -55,7 +56,7 @@ function Contact() {
     >
       <div className={styles.ambientGlow} />
 
-      <div className={styles.card}>
+      <div className={`${styles.card} spotlightCard`} onMouseMove={handleSpotlightMove}>
         <div className={styles.cardGlow} />
 
         <div className={styles.header}>

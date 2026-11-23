@@ -20,13 +20,15 @@ function BackToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  if (!visible) {
-    return null;
-  }
-
   return (
-    <button onClick={scrollToTop} className={styles.button} aria-label="Remonter en haut">
-      ↑
+    <button
+      onClick={scrollToTop}
+      className={`${styles.button} ${visible ? styles.buttonVisible : ''}`}
+      aria-label="Remonter en haut"
+      aria-hidden={!visible}
+      tabIndex={visible ? 0 : -1}
+    >
+      <span className={styles.arrow} aria-hidden="true">↑</span>
     </button>
   );
 }

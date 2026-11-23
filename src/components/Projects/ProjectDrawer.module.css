@@ -1,0 +1,352 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(4, 8, 18, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.overlayOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  width: min(620px, 100vw);
+  height: 100%;
+  background: var(--surface-alt);
+  border-left: 1px solid var(--border);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.34s var(--ease-out-expo);
+}
+
+.drawerOpen {
+  transform: translateX(0);
+}
+
+/* Sticky Top Bar */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(13, 19, 32, 0.92);
+  backdrop-filter: blur(12px);
+  flex-shrink: 0;
+}
+
+.navControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.counter {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+.counterSep {
+  color: var(--text-muted);
+  margin: 0 2px;
+}
+
+.navButtons {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navBtn,
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.navBtn:hover,
+.closeBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0, 245, 212, 0.08);
+}
+
+.navBtn:focus-visible,
+.closeBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.navIcon,
+.closeIcon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Scrollable Body */
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 28px 32px;
+  overscroll-behavior: contain;
+}
+
+.contentAnimated {
+  animation: drawerContentFade 0.26s var(--ease-out-expo);
+}
+
+@keyframes drawerContentFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.metaRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.iconBox {
+  padding: 11px;
+  border-radius: 12px;
+  background: rgba(0, 245, 212, 0.1);
+  border: 1px solid rgba(0, 245, 212, 0.3);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconSvg {
+  width: 22px;
+  height: 22px;
+}
+
+.metaBadges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.contextBadge {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(0, 245, 212, 0.08);
+  border: 1px solid rgba(0, 245, 212, 0.3);
+  border-radius: 8px;
+  padding: 4px 10px;
+}
+
+.domainPill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.title {
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+
+.description {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.72;
+  margin-bottom: 28px;
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionHeading {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.highlightsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.highlightCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 2px solid rgba(0, 245, 212, 0.55);
+}
+
+.highlightNum {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0.85;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.highlightText {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.62;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  padding: 5px 10px;
+  border-radius: 7px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--accent);
+}
+
+/* Sticky Footer */
+.footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: rgba(13, 19, 32, 0.96);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.footerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actionBtn {
+  flex: 1;
+  min-width: 170px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.actionBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(0, 245, 212, 0.08);
+  transform: translateY(-1px);
+}
+
+.actionBtnLive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.actionBtnLive:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--bg);
+  box-shadow: 0 6px 20px rgba(0, 245, 212, 0.28);
+}
+
+.liveIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.keyboardHint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
+@media (max-width: 640px) {
+  .topBar {
+    padding: 14px 16px;
+  }
+
+  .body {
+    padding: 20px 16px 24px;
+  }
+
+  .footer {
+    padding: 14px 16px;
+  }
+
+  .keyboardHint {
+    display: none;
+  }
+}

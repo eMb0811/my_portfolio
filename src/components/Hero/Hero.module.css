@@ -161,12 +161,22 @@
 .btnIcon {
   width: 16px;
   height: 16px;
+  transition: transform 0.22s var(--ease-out-expo);
+}
+
+.primaryBtn:hover .btnIcon {
+  transform: translateY(3px);
 }
 
 .mailIcon {
   width: 18px;
   height: 18px;
   color: var(--accent);
+  transition: transform 0.22s var(--ease-out-expo);
+}
+
+.secondaryBtn:hover .mailIcon {
+  transform: translateX(2px);
 }
 
 .socialGroup {
@@ -222,6 +232,11 @@
 .cvIcon {
   width: 18px;
   height: 18px;
+  transition: transform 0.22s var(--ease-out-expo);
+}
+
+.cvBtn:hover .cvIcon {
+  transform: translateY(2px);
 }
 
 @media (max-width: 640px) {

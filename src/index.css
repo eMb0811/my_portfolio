@@ -5,16 +5,20 @@
   --surface: #121826;
   --surface-alt: #0D1320;
   --surface-elevated: #161F32;
+  --surface-hover: #1A2438;
   --border: #202B42;
   --border-subtle: #161F32;
   --text: #F8FAFC;
+  --text-secondary: #CBD5E1;
   --text-muted: #94A3B8;
+  --text-dim: #94A3B8;
   --accent: #00F5D4;
   --accent-hover: #00DFC4;
   --accent-dim: #00A892;
   --accent-glow: rgba(0, 245, 212, 0.25);
   --accent-subtle: rgba(0, 245, 212, 0.08);
 
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
   --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
@@ -89,12 +93,107 @@ button {
 
 .reveal {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateY(18px);
+  transition: opacity 0.55s var(--ease-out-expo), transform 0.55s var(--ease-out-expo);
 }
 
 .revealVisible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Staggered children inside a revealed section (releases transform on finish so :hover stays crisp) */
+@keyframes staggerReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.staggerItem {
+  opacity: 0;
+}
+
+.revealVisible .staggerItem,
+.staggerVisible {
+  opacity: 1;
+  animation: staggerReveal 0.55s var(--ease-out-expo) var(--stagger-delay, 0ms) backwards;
+}
+
+/* Gentle entrance animation on filter changes */
+@keyframes filterFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filterEnter {
+  animation: filterFadeIn 0.36s var(--ease-out-expo) backwards;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+/* Subtle cursor-tracking spotlight for interactive cards (pointer devices only) */
+.spotlightCard {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlightCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    320px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(0, 245, 212, 0.085),
+    transparent 68%
+  );
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .spotlightCard:hover::after {
+    opacity: 1;
+  }
+}
+
+/* Respect user motion preferences strictly */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal,
+  .staggerItem,
+  .filterEnter {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .spotlightCard::after {
+    display: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 

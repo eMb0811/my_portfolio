@@ -12,6 +12,7 @@ export const projects = [
   // ============================================================================
   {
     id: 'projet_cotisation_java',
+    featured: true,
     titre: 'Plateforme Cotisations UCAD — Architecture Cloud-Native K3s & DevSecOps sur AWS',
     categorie: 'Cloud, DevSecOps & IaC',
     badgeContexte: 'AWS • K3s • DevSecOps',
@@ -41,6 +42,7 @@ export const projects = [
   },
   {
     id: 'my_portfolio',
+    featured: true,
     titre: 'Architecture « Inception DevOps » Auto-Hébergée sur AWS & Agent SRE AIOps',
     categorie: 'Cloud, DevSecOps & IaC',
     badgeContexte: 'AWS • Terraform • AIOps',
@@ -101,6 +103,7 @@ export const projects = [
   // ============================================================================
   {
     id: 'supervision-securite-remediation-proxmox',
+    featured: true,
     titre: 'Plateforme SOC/SRE Proxmox VE 8 & pfSense : Corrélation, Self-Healing & Quarantaine IP',
     categorie: 'Cybersécurité, SOC & Observabilité',
     badgeContexte: 'Proxmox • pfSense • SOAR',
@@ -129,6 +132,7 @@ export const projects = [
   },
   {
     id: 'architecture-noc-soc-360-lab',
+    featured: true,
     titre: 'Architecture NOC/SOC 360° : SDN Open vSwitch, Suricata IDS, Kubernetes & Observabilité',
     categorie: 'Cybersécurité, SOC & Observabilité',
     badgeContexte: 'Suricata IDS • OVS SPAN • K8s',
@@ -183,6 +187,7 @@ export const projects = [
   // ============================================================================
   {
     id: 'reseau-multi-vlan-proxmox',
+    featured: true,
     titre: 'Architecture Réseau Multi-VLAN 802.1Q Hybride Cisco/Proxmox, VPN Site-to-Site & AAA',
     categorie: 'Réseaux, Télécoms & Virtualisation',
     badgeContexte: 'Cisco IOS • Proxmox • OpenVPN',
@@ -264,6 +269,7 @@ export const projects = [
   // ============================================================================
   {
     id: 'eduflow',
+    featured: true,
     titre: 'EduFlow — Plateforme EdTech Multi-Agents IA, Vision OCR & RAG (Hackathon IA 2026)',
     categorie: 'Dév Full-Stack, Mobile & IA',
     badgeContexte: 'Hackathon Open Source × AI 2026',

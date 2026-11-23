@@ -12,13 +12,13 @@ function Hero() {
 
       <div className={styles.container}>
         {/* Role badge pill */}
-        <div className={styles.roleBadge}>
+        <div className={`${styles.roleBadge} staggerItem`} style={{ '--stagger-delay': '40ms' }}>
           <span className={styles.badgePulse} />
           <span>Ingénierie Cloud, DevSecOps, Cybersécurité SOC &amp; Réseaux Télécoms</span>
         </div>
 
         {/* Headline */}
-        <h1 className={styles.title}>
+        <h1 className={`${styles.title} staggerItem`} style={{ '--stagger-delay': '110ms' }}>
           Infrastructures Cloud-Native, <br className={styles.breakLine} />
           <span className={styles.gradientText}>
             automatisation DevSecOps &amp; SOC 360°.
@@ -26,13 +26,13 @@ function Hero() {
         </h1>
 
         {/* Subtitle */}
-        <p className={styles.text}>
+        <p className={`${styles.text} staggerItem`} style={{ '--stagger-delay': '180ms' }}>
           Étudiant en Master 1 Réseaux &amp; Télécommunications (RETEL — UCAD) et diplômé en Informatique.
           Je conçois, sécurise et supervise des architectures distribuées de bout en bout (AWS, Proxmox VE, Kubernetes, Terraform, Ansible, Suricata &amp; Prometheus/Grafana) — en recherche active de stage.
         </p>
 
         {/* CTAs */}
-        <div className={styles.actions}>
+        <div className={`${styles.actions} staggerItem`} style={{ '--stagger-delay': '250ms' }}>
           <a href="#projects" className={styles.primaryBtn}>
             <span>Explorer les 13 projets</span>
             <svg className={styles.btnIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -88,7 +88,7 @@ function Hero() {
         </div>
 
         {/* Tech tags strip */}
-        <div className={styles.techStrip}>
+        <div className={`${styles.techStrip} staggerItem`} style={{ '--stagger-delay': '320ms' }}>
           <span className={styles.techBadge}>AWS • Terraform • Ansible</span>
           <span className={styles.techBadge}>Kubernetes (K3s / Kind) &amp; Docker</span>
           <span className={styles.techBadge}>Proxmox VE 8 (LXC / QEMU)</span>

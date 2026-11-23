@@ -1,9 +1,9 @@
 export const categoriesSkills = [
-  'Tous',
   'Cloud, DevSecOps & IaC',
   'Cybersécurité, SOC & Observabilité',
   'Réseaux, Télécoms & Virtualisation',
   'Dév Full-Stack, Mobile & IA',
+  'Tous',
 ];
 
 export const skills = [

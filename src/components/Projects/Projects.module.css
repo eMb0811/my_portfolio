@@ -55,7 +55,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 36px;
+  margin-bottom: 32px;
 }
 
 .filterBtn {
@@ -109,8 +109,65 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 22px;
+}
+
+.expandRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.expandLine {
+  flex: 1;
+  max-width: 220px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.expandBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  flex-shrink: 0;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.22s var(--ease-out-expo),
+    box-shadow 0.22s ease;
+}
+
+.expandBtn:hover {
+  border-color: var(--accent);
+  background: rgba(0, 245, 212, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 245, 212, 0.16);
+}
+
+.expandBtn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.expandChevron {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
+  transition: transform 0.28s var(--ease-out-expo);
+}
+
+.expandChevronUp {
+  transform: rotate(180deg);
 }
 
 @media (max-width: 640px) {

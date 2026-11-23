@@ -3,6 +3,7 @@ import useReveal from '../../hooks/useReveal.js';
 import photoMb from '../../assets/photo_mb.jpg';
 import { GitHubIcon, LinkedInIcon } from '../common/Icons.jsx';
 import { trackCvDownload, trackContactClick } from '../../utils/telemetry.js';
+import { handleSpotlightMove } from '../../utils/spotlight.js';
 
 const parcours = [
   {
@@ -64,7 +65,10 @@ function About() {
         {/* Left Profile Card (Stitch Inspired with real photo) */}
         <div className={styles.profileWrapper}>
           <div className={styles.profileGlow}></div>
-          <div className={styles.profileCard}>
+          <div
+            className={`${styles.profileCard} spotlightCard`}
+            onMouseMove={handleSpotlightMove}
+          >
             <div className={styles.avatarContainer}>
               <img src={photoMb} alt="Mouhamet Barry" className={styles.avatarImg} />
             </div>
@@ -155,8 +159,13 @@ function About() {
 
           <h3 className={styles.subtitle}>Quatre domaines d’expertise complémentaires</h3>
           <div className={styles.piliersGrid}>
-            {piliers.map((p) => (
-              <div key={p.id} className={styles.pilierCard}>
+            {piliers.map((p, index) => (
+              <div
+                key={p.id}
+                className={`${styles.pilierCard} spotlightCard staggerItem`}
+                style={{ '--stagger-delay': `${index * 65}ms` }}
+                onMouseMove={handleSpotlightMove}
+              >
                 <h4 className={styles.pilierTitle}>{p.titre}</h4>
                 <p className={styles.pilierDesc}>{p.description}</p>
               </div>
@@ -165,8 +174,12 @@ function About() {
 
           <h3 className={styles.subtitle}>Parcours universitaire &amp; Hackathon</h3>
           <ul className={styles.parcours}>
-            {parcours.map((etape) => (
-              <li key={etape.id} className={styles.parcoursItem}>
+            {parcours.map((etape, index) => (
+              <li
+                key={etape.id}
+                className={`${styles.parcoursItem} staggerItem`}
+                style={{ '--stagger-delay': `${index * 80}ms` }}
+              >
                 <div className={styles.parcoursHeader}>
                   <span className={styles.parcoursDiplome}>{etape.diplome}</span>
                   <span className={styles.parcoursEtablissement}>{etape.etablissement}</span>

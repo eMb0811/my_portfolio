@@ -1,16 +1,18 @@
 import styles from './Navbar.module.css';
 import { useState } from 'react';
 import { GitHubIcon, LinkedInIcon } from '../common/Icons.jsx';
+import useScrollSpy from '../../hooks/useScrollSpy.js';
 
 const links = [
-  { href: '#about', label: 'À propos' },
-  { href: '#skills', label: 'Compétences' },
-  { href: '#projects', label: 'Projets' },
-  { href: '#contact', label: 'Contact' },
+  { href: '#about', id: 'about', label: 'À propos' },
+  { href: '#skills', id: 'skills', label: 'Compétences' },
+  { href: '#projects', id: 'projects', label: 'Projets' },
+  { href: '#contact', id: 'contact', label: 'Contact' },
 ];
 
 function Navbar() {
   const [menuOuvert, setMenuOuvert] = useState(false);
+  const { activeSection, scrollProgress } = useScrollSpy();
 
   return (
     <nav className={styles.navbar}>
@@ -55,18 +57,22 @@ function Navbar() {
         {/* Navigation links & desktop header buttons */}
         <div className={`${styles.navActions} ${menuOuvert ? styles.navActionsOpen : ''}`}>
           <ul className={styles.links}>
-            {links.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  onClick={() => setMenuOuvert(false)}
-                  className={`${styles.navLink} ${link.isLive ? styles.navLinkLive : ''}`}
-                >
-                  {link.isLive && <span className={styles.liveIndicator} />}
-                  <span>{link.label}</span>
-                </a>
-              </li>
-            ))}
+            {links.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    onClick={() => setMenuOuvert(false)}
+                    aria-current={isActive ? 'location' : undefined}
+                    className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''} ${link.isLive ? styles.navLinkLive : ''}`}
+                  >
+                    {link.isLive && <span className={styles.liveIndicator} />}
+                    <span>{link.label}</span>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
 
           <div className={styles.headerButtons}>
@@ -103,6 +109,13 @@ function Navbar() {
             </a>
           </div>
         </div>
+      </div>
+
+      <div className={styles.progressTrack} aria-hidden="true">
+        <div
+          className={styles.progressBar}
+          style={{ transform: `scaleX(${scrollProgress})` }}
+        />
       </div>
     </nav>
   );
