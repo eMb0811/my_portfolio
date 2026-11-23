@@ -28,6 +28,7 @@ function Monitoring({ onBack }) {
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
   const [expandedSessions, setExpandedSessions] = useState(() => new Set());
+  const [discordFeedback, setDiscordFeedback] = useState('');
 
   const toggleExpand = (id) => {
     setExpandedSessions((prev) => {
@@ -141,6 +142,27 @@ function Monitoring({ onBack }) {
     setAdminToken('');
     setStats(null);
     setAuthError('');
+  }
+
+  async function handleTestDiscord() {
+    setDiscordFeedback('Envoi du test Discord...');
+    try {
+      const url = getApiUrl('/api/monitor/test-discord');
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${adminToken}`,
+        },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setDiscordFeedback('✅ ' + (data.message || 'Alerte test envoyée sur Discord !'));
+      } else {
+        setDiscordFeedback('❌ ' + (data.error || `Erreur HTTP ${res.status}`));
+      }
+    } catch (err) {
+      setDiscordFeedback('❌ Erreur réseau : ' + err.message);
+    }
   }
 
   async function handleResetMetrics() {
@@ -546,14 +568,28 @@ function Monitoring({ onBack }) {
         <div className={styles.adminControls}>
           <div className={styles.adminStatusText}>
             ✓ Accès Administrateur Privé — Les statistiques APM et IP visiteurs sont strictement protégées côté serveur (HTTP 401 sans authentification).
+            {discordFeedback && (
+              <div style={{ marginTop: '6px', color: discordFeedback.startsWith('✅') ? '#34d399' : '#fca5a5' }}>
+                {discordFeedback}
+              </div>
+            )}
           </div>
-          <button
-            type="button"
-            onClick={handleResetMetrics}
-            className={styles.resetBtn}
-          >
-            Réinitialiser les métriques APM
-          </button>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={handleTestDiscord}
+              className={styles.adminBtn}
+            >
+              🔔 Tester Discord
+            </button>
+            <button
+              type="button"
+              onClick={handleResetMetrics}
+              className={styles.resetBtn}
+            >
+              Réinitialiser les métriques APM
+            </button>
+          </div>
         </div>
       </div>
     </div>

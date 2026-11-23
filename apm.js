@@ -2,8 +2,32 @@ import crypto from 'crypto';
 
 // Configuration and State
 const ADMIN_PASSWORD = process.env.ADMIN_MONITOR_PASSWORD || 'mbarry@admin2026';
-const DEFAULT_DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1571841881220980746/WDiuWk_Jw-lgkp0CsOjJIXAorSgne_9_Iw90Rntf4yY3dwY_amrojV6DfaX_RfvbuKVY';
-const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL || DEFAULT_DISCORD_WEBHOOK;
+// Never hardcode Discord webhook URLs in source code (GitHub Secret Scanning auto-revokes public webhooks)
+let activeDiscordWebhookUrl = (process.env.DISCORD_WEBHOOK_URL || '').trim();
+
+async function postDiscordEmbed(embed, context = 'APM') {
+  const url = activeDiscordWebhookUrl || (process.env.DISCORD_WEBHOOK_URL || '').trim();
+  if (!url) {
+    return { ok: false, status: 0, error: 'DISCORD_WEBHOOK_URL non configuré sur le serveur.' };
+  }
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] }),
+    });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      console.error(`Erreur webhook Discord (${context}) HTTP ${res.status} :`, errText);
+      return { ok: false, status: res.status, error: `Discord HTTP ${res.status} : ${errText || res.statusText}` };
+    }
+    return { ok: true, status: res.status };
+  } catch (err) {
+    console.error(`Erreur webhook Discord (${context}) :`, err.message);
+    return { ok: false, status: 0, error: err.message };
+  }
+}
 
 const startTime = Date.now();
 const MAX_LATENCIES = 120;
@@ -76,29 +100,20 @@ function verifyPassword(input = '') {
 }
 
 async function sendDiscordSecurityAlert(ip, attempts) {
-  if (!DISCORD_WEBHOOK_URL) return;
-  try {
-    const embed = {
-      title: '🚨 Alerte Sécurité : Tentatives d’accès Admin bloquées',
-      description: `Plusieurs tentatives de connexion échouées sur la console de Monitoring privée.`,
-      color: 0xEF4444, // Red
-      fields: [
-        { name: '🌐 IP Source', value: ip, inline: true },
-        { name: '🔁 Tentatives', value: `${attempts} échecs`, inline: true },
-        { name: '🔒 Action', value: 'IP bloquée pour 15 minutes (HTTP 429)', inline: false },
-      ],
-      footer: { text: 'Portfolio Mouhamet Barry — Protection Anti-Brute-Force' },
-      timestamp: new Date().toISOString(),
-    };
+  const embed = {
+    title: '🚨 Alerte Sécurité : Tentatives d’accès Admin bloquées',
+    description: `Plusieurs tentatives de connexion échouées sur la console de Monitoring privée.`,
+    color: 0xEF4444, // Red
+    fields: [
+      { name: '🌐 IP Source', value: ip, inline: true },
+      { name: '🔁 Tentatives', value: `${attempts} échecs`, inline: true },
+      { name: '🔒 Action', value: 'IP bloquée pour 15 minutes (HTTP 429)', inline: false },
+    ],
+    footer: { text: 'Portfolio Mouhamet Barry — Protection Anti-Brute-Force' },
+    timestamp: new Date().toISOString(),
+  };
 
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ embeds: [embed] }),
-    });
-  } catch (err) {
-    console.error('Erreur webhook Discord Security :', err.message);
-  }
+  await postDiscordEmbed(embed, 'Security');
 }
 
 // Date & Time formatting helpers (French 24h format)
@@ -178,97 +193,77 @@ function getSessionId(req) {
 
 // Send instant notification to Discord Webhook on new session
 async function sendDiscordNotification(session, currentPath) {
-  if (!DISCORD_WEBHOOK_URL) return;
+  const embed = {
+    title: '🎯 Nouveau Visiteur sur le Portfolio !',
+    description: `Un utilisateur navigue actuellement sur le site.`,
+    color: 0x00F5D4, // Neon Cyan
+    fields: [
+      { name: '📅 Date & Heure exacte', value: session.firstSeenFormatted, inline: false },
+      { name: '💻 Appareil', value: `${session.device} • ${session.browser} (${session.os})`, inline: true },
+      { name: '🌍 Pays / IP', value: `${session.country} (${session.maskedIp})`, inline: true },
+      { name: '🧭 Entrée', value: currentPath || 'Accueil (/)', inline: true },
+      { name: '📊 Dashboard APM', value: `[Ouvrir l'Observabilité](https://mbarry.is-a.dev/#monitoring)`, inline: false },
+    ],
+    footer: { text: 'Portfolio Mouhamet Barry — APM & Observabilité Live' },
+    timestamp: new Date().toISOString(),
+  };
 
-  try {
-    const embed = {
-      title: '🎯 Nouveau Visiteur sur le Portfolio !',
-      description: `Un utilisateur navigue actuellement sur le site.`,
-      color: 0x00F5D4, // Neon Cyan
-      fields: [
-        { name: '📅 Date & Heure exacte', value: session.firstSeenFormatted, inline: false },
-        { name: '💻 Appareil', value: `${session.device} • ${session.browser} (${session.os})`, inline: true },
-        { name: '🌍 Pays / IP', value: `${session.country} (${session.maskedIp})`, inline: true },
-        { name: '🧭 Entrée', value: currentPath || 'Accueil (/)', inline: true },
-        { name: '📊 Dashboard APM', value: `[Ouvrir l'Observabilité](https://mbarry.is-a.dev/#monitoring)`, inline: false },
-      ],
-      footer: { text: 'Portfolio Mouhamet Barry — APM & Observabilité Live' },
-      timestamp: new Date().toISOString(),
-    };
-
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ embeds: [embed] }),
-    });
-  } catch (err) {
-    console.error('Erreur webhook Discord APM :', err.message);
-  }
+  await postDiscordEmbed(embed, 'NewVisitor');
 }
 
 // Send instant notification to Discord Webhook for key actions (CV download, project click, etc.)
 async function sendDiscordEventNotification(session, event, label, details) {
-  if (!DISCORD_WEBHOOK_URL) return;
+  let title = '⚡ Interaction Détectée sur le Portfolio';
+  let color = 0x00F5D4;
+  let description = `Un visiteur a interagi : **${label || event}**`;
 
-  try {
-    let title = '⚡ Interaction Détectée sur le Portfolio';
-    let color = 0x00F5D4;
-    let description = `Un visiteur a interagi : **${label || event}**`;
-
-    if (event === 'CV_DOWNLOAD') {
-      title = '📄 Téléchargement de CV Détecté !';
-      color = 0x10B981; // Emerald Green
-      description = `🎯 Un visiteur vient de télécharger votre **CV au format PDF** !`;
-    } else if (event === 'PROJECT_CLICK') {
-      title = `🚀 Consultation de Projet : ${label || 'Projet'}`;
-      color = 0x3B82F6; // Blue
-      description = `Un visiteur s'intéresse à l'un de vos projets et consulte son lien externe ou GitHub.`;
-    } else if (event === 'CONTACT_CLICK') {
-      title = `📬 Intérêt Contact : ${label || 'Contact'}`;
-      color = 0xA855F7; // Purple
-      description = `Un visiteur a cliqué sur un moyen de contact direct.`;
-    }
-
-    // Trace past sections viewed
-    const sectionsSummary = (session.timeline || [])
-      .filter((t) => t.type === 'section' || t.type === 'page')
-      .slice(-4)
-      .map((t) => t.name)
-      .join(' ➔ ') || session.currentPath || 'Accueil';
-
-    const fields = [
-      { name: '👤 Visiteur', value: `${session.device} • ${session.browser} (${session.os})`, inline: true },
-      { name: '🌍 Pays / IP', value: `${session.country} (${session.maskedIp})`, inline: true },
-      { name: '🕒 Heure d’arrivée', value: session.firstSeenTime || formatTime(session.firstSeen), inline: true },
-    ];
-
-    if (details?.url) {
-      fields.push({ name: '🔗 Lien', value: details.url, inline: true });
-    }
-    if (details?.source) {
-      fields.push({ name: '📍 Source', value: details.source, inline: true });
-    }
-
-    fields.push({ name: '🧭 Parcours avant action', value: sectionsSummary, inline: false });
-    fields.push({ name: '📊 Dashboard APM', value: `[Accéder au Monitoring Live](https://mbarry.is-a.dev/#monitoring)`, inline: false });
-
-    const embed = {
-      title,
-      description,
-      color,
-      fields,
-      footer: { text: 'Portfolio Mouhamet Barry — Alertes Événements APM' },
-      timestamp: new Date().toISOString(),
-    };
-
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ embeds: [embed] }),
-    });
-  } catch (err) {
-    console.error('Erreur webhook Discord Event :', err.message);
+  if (event === 'CV_DOWNLOAD') {
+    title = '📄 Téléchargement de CV Détecté !';
+    color = 0x10B981; // Emerald Green
+    description = `🎯 Un visiteur vient de télécharger votre **CV au format PDF** !`;
+  } else if (event === 'PROJECT_CLICK') {
+    title = `🚀 Consultation de Projet : ${label || 'Projet'}`;
+    color = 0x3B82F6; // Blue
+    description = `Un visiteur s'intéresse à l'un de vos projets et consulte son lien externe ou GitHub.`;
+  } else if (event === 'CONTACT_CLICK') {
+    title = `📬 Intérêt Contact : ${label || 'Contact'}`;
+    color = 0xA855F7; // Purple
+    description = `Un visiteur a cliqué sur un moyen de contact direct.`;
   }
+
+  // Trace past sections viewed
+  const sectionsSummary = (session.timeline || [])
+    .filter((t) => t.type === 'section' || t.type === 'page')
+    .slice(-4)
+    .map((t) => t.name)
+    .join(' ➔ ') || session.currentPath || 'Accueil';
+
+  const fields = [
+    { name: '👤 Visiteur', value: `${session.device} • ${session.browser} (${session.os})`, inline: true },
+    { name: '🌍 Pays / IP', value: `${session.country} (${session.maskedIp})`, inline: true },
+    { name: '🕒 Heure d’arrivée', value: session.firstSeenTime || formatTime(session.firstSeen), inline: true },
+  ];
+
+  if (details?.url) {
+    fields.push({ name: '🔗 Lien', value: details.url, inline: true });
+  }
+  if (details?.source) {
+    fields.push({ name: '📍 Source', value: details.source, inline: true });
+  }
+
+  fields.push({ name: '🧭 Parcours avant action', value: sectionsSummary, inline: false });
+  fields.push({ name: '📊 Dashboard APM', value: `[Accéder au Monitoring Live](https://mbarry.is-a.dev/#monitoring)`, inline: false });
+
+  const embed = {
+    title,
+    description,
+    color,
+    fields,
+    footer: { text: 'Portfolio Mouhamet Barry — Alertes Événements APM' },
+    timestamp: new Date().toISOString(),
+  };
+
+  await postDiscordEmbed(embed, `Event:${event}`);
 }
 
 // Register or update active visitor session
@@ -654,6 +649,45 @@ export async function handleApmApi(req, res) {
     }
     res.statusCode = 200;
     return res.end(JSON.stringify({ success: true }));
+  }
+
+  if (url.endsWith('/test-discord') || url.includes('/monitor/test-discord')) {
+    if (!isAdmin) {
+      res.statusCode = 403;
+      return res.end(JSON.stringify({ error: 'Accès réservé à l’administrateur.' }));
+    }
+    const result = await postDiscordEmbed(
+      {
+        title: '✅ Test Webhook Discord — Opérationnel !',
+        description: 'La connexion entre votre APM Portfolio et Discord fonctionne parfaitement.',
+        color: 0x10B981,
+        fields: [
+          { name: '🕒 Date & Heure', value: formatDateTime(Date.now()), inline: true },
+          { name: '🛡️ Statut', value: 'Authentifié Admin', inline: true },
+        ],
+        footer: { text: 'Portfolio Mouhamet Barry — Test Manuel' },
+        timestamp: new Date().toISOString(),
+      },
+      'TestManual'
+    );
+    res.statusCode = result.ok ? 200 : 502;
+    return res.end(JSON.stringify(result.ok ? { success: true, message: 'Alerte test envoyée sur Discord !' } : { error: result.error }));
+  }
+
+  if (url.endsWith('/webhook') || url.includes('/monitor/webhook')) {
+    if (!isAdmin) {
+      res.statusCode = 403;
+      return res.end(JSON.stringify({ error: 'Accès réservé à l’administrateur.' }));
+    }
+    const parsed = await parseRequestBody(req);
+    const newUrl = (parsed?.webhookUrl || '').trim();
+    if (!newUrl || !/^https:\/\/(canary\.|ptb\.)?discord(app)?\.com\/api\/webhooks\//i.test(newUrl)) {
+      res.statusCode = 400;
+      return res.end(JSON.stringify({ error: 'URL de webhook Discord invalide.' }));
+    }
+    activeDiscordWebhookUrl = newUrl;
+    res.statusCode = 200;
+    return res.end(JSON.stringify({ success: true, message: 'Webhook Discord mis à jour en mémoire.' }));
   }
 
   if (url.endsWith('/reset') || url.includes('/monitor/reset')) {
